@@ -568,6 +568,15 @@ async def guildinfo(ctx):
         embed.add_field(name=server.name, value=f'**Owner:** {server.owner} **Members:** {server.member_count} **id:** {server.id}', inline=False)
     await ctx.send(content=None, embed=embed)
 
+##---------- Manual Daily LB Reset -----------##
+@commands.guild_only()
+@commands.is_owner()
+@bot.command()
+async def manu_dlb_reset(ctx):
+    resetdlb()
+    embed = systemEmbed("Attempted manual reset of daily leaderboard")
+    await ctx.send(content=None, embed=embed)
+    
 ##---------- INVITE -----------##
 @commands.guild_only()
 @bot.command()
