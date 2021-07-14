@@ -244,7 +244,9 @@ def tvcleaderboard(guildid):
                 pass
         return the_vclist
     except:
-        return Nonedef vcount(userid, guildid):
+        return None
+    
+    def vcount(userid, guildid):
     conn, c = connect(guildid)
     try:
         c.execute("SELECT vc FROM vcTime WHERE userid = ?", (userid,))
