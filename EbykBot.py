@@ -38,8 +38,8 @@ def resetlb():
             print(f"Leaderboard Reset Failed for {filename}")
 
 def resetdlb():
-    for filename in os.listdir('/Users/hjcho/DiscordBot/ebykdb'):
-        conn = sqlite3.connect(f"/Users/hjcho/DiscordBot/ebykdb/{filename}")
+    for filename in os.listdir('/home/ebyk/ebykdb'):
+        conn = sqlite3.connect(f"/home/ebyk/ebykdb/{filename}")
         c = conn.cursor()
         try:
             c.execute('UPDATE dmsgCount SET dmsgs = 0 WHERE dmsgs < 999999')
