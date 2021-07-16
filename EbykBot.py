@@ -511,7 +511,7 @@ async def on_ready():
 async def help(ctx, htype=None):
     helpe = discord.Embed(title='', description="prefix: eb ___", color=3037421)
     helpe.set_author(name="Ebyk Bot Help Page", icon_url=bot.user.avatar_url)
-    helpe.set_footer(text="Programmed by ebyk#0007, dm for questions.")
+    helpe.set_footer(text="Programmed by ebyk#7894, dm for questions.")
     if htype == None:
         helpe.add_field(name='eb h general', value='open general commands help menu', inline=False)
         helpe.add_field(name='eb h leaderboards', value='open message/vc leaderboards help menu', inline=False)
@@ -581,7 +581,7 @@ async def manu_dlb_reset(ctx):
 @commands.guild_only()
 @bot.command()
 async def invite(ctx):
-    embed = systemEmbed('**Invite:** https://discord.com/api/oauth2/authorize?client_id=800171925275017237&permissions=650304&scope=bot\nadd + dm **ebyk#0007** for questions or suggestions')
+    embed = systemEmbed('**Invite:** https://discord.com/api/oauth2/authorize?client_id=800171925275017237&permissions=650304&scope=bot\nadd + dm **ebyk#7894** for questions or suggestions')
     await ctx.send(content=None, embed=embed)
 
 ##---------- AVATAR -----------##
