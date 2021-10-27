@@ -15,6 +15,7 @@ from threading import Thread
 from multiprocessing import Process
 intents = discord.Intents.default()
 intents.members = True
+intents.messages = True
 
 bot = commands.Bot(command_prefix='eb ', case_insensitive=True, owner_id=329326685185114115, help_command=None, intents=intents)
 
