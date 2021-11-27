@@ -48,6 +48,28 @@ def resetdlb():
             print(f"Leaderboard Reset Succeeded for {filename}")
         except:
             print(f"Leaderboard Reset Failed for {filename}")
+            
+def resettmlb():
+    for filename in os.listdir('/home/ebyk/ebykdb'):
+        conn = sqlite3.connect(f"/home/ebyk/ebykdb/{filename}")
+        c = conn.cursor()
+        try:
+            c.execute('UPDATE totalmsgCount SET tmsgs = 0 WHERE tmsgs < 999999')
+            conn.commit()
+            print(f"Total Message Leaderboard Reset Succeeded for {filename}")
+        except:
+            print(f"Total Message Leaderboard Reset Failed for {filename}")
+
+def resettvclb():
+    for filename in os.listdir('/home/ebyk/ebykdb'):
+        conn = sqlite3.connect(f"/home/ebyk/ebykdb/{filename}")
+        c = conn.cursor()
+        try:
+            c.execute('UPDATE totalvcTime SET tvc = 0 WHERE tvc < 999999')
+            conn.commit()
+            print(f"Total Voice Leaderboard Reset Succeeded for {filename}")
+        except:
+            print(f"Total Voice Leaderboard Reset Failed for {filename}")
 
 async def updatestatus():
     totalusers = 0
@@ -533,6 +555,8 @@ async def help(ctx, htype=None):
         helpe.add_field(name='eb vc', value='check how much time you spent in vc', inline=False)
         helpe.add_field(name='eb vcleaderboard (eb vclb)', value='check the weekly vc leaderboard', inline=False)
         helpe.add_field(name='eb tvcleaderboard (eb tvclb)', value='check the total vc leaderboard', inline=False)
+        helpe.add_field(name='eb reset_total_mlb (eb rtmlb)', value='reset the total leaderboard for messages, requires Admin Permission', inline=False)
+        helpe.add_field(name='eb reset_total_vclb (eb rtvclb)', value='reset the total leaderboard for voice, requires Admin Permission', inline=False)        
     elif htype == "gambling":
         helpe.add_field(name='eb balance (eb bal)', value='check your balance', inline=False)
         helpe.add_field(name='eb bleaderboard (eb blb)', value='check the server balance leaderboard', inline=False)
@@ -578,6 +602,36 @@ async def manu_dlb_reset(ctx):
     embed = systemEmbed("Attempted manual reset of daily leaderboard")
     await ctx.send(content=None, embed=embed)
     
+##---------- Admin Total Message LB Reset -----------##
+@commands.guild_only()
+@has_permissions(administrator=True)
+@bot.command(aliases=['rtmlb'])
+async def reset_total_mlb(ctx):
+    resettmlb()
+    embed = systemEmbed("Finished manual reset of total message leaderboard")
+    await ctx.send(content=None, embed=embed)
+    
+@reset_total_lb.error
+async def reset_total_mlb_error(ctx, error):
+    if isinstance(error, CheckFailure):
+        embed = errorEmbed(ctx, "Failed to reset total message leaderboard", "Missing Admin Permissions")
+        await ctx.send(content=None, embed=embed)
+
+##---------- Admin Total Voice LB Reset -----------##
+@commands.guild_only()
+@has_permissions(administrator=True)
+@bot.command(aliases=['rtvclb'])
+async def reset_total_vclb(ctx):
+    resettvclb()
+    embed = systemEmbed("Finished manual reset of total voice leaderboard")
+    await ctx.send(content=None, embed=embed)
+    
+@reset_total_lb.error
+async def reset_total_vclb_error(ctx, error):
+    if isinstance(error, CheckFailure):
+        embed = errorEmbed(ctx, "Failed to reset total voice leaderboard", "Missing Admin Permissions")
+        await ctx.send(content=None, embed=embed)
+        
 ##---------- INVITE -----------##
 @commands.guild_only()
 @bot.command()
