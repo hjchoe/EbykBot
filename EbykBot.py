@@ -557,6 +557,7 @@ async def help(ctx, htype=None):
         helpe.add_field(name='eb tvcleaderboard (eb tvclb)', value='check the total vc leaderboard', inline=False)
         helpe.add_field(name='eb reset_total_mlb (eb rtmlb)', value='reset the total leaderboard for messages, requires Admin Permission', inline=False)
         helpe.add_field(name='eb reset_total_vclb (eb rtvclb)', value='reset the total leaderboard for voice, requires Admin Permission', inline=False)        
+        helpe.add_field(name='eb removemessages (eb rm)', value='remove total messages from a member, requires Admin Permission', inline=False)        
     elif htype == "gambling":
         helpe.add_field(name='eb balance (eb bal)', value='check your balance', inline=False)
         helpe.add_field(name='eb bleaderboard (eb blb)', value='check the server balance leaderboard', inline=False)
@@ -632,6 +633,34 @@ async def reset_total_vclb_error(ctx, error):
         embed = errorEmbed(ctx, "Failed to reset total voice leaderboard", "Missing Admin Permissions")
         await ctx.send(content=None, embed=embed)
         
+##---------- Admin Message Remove -----------##
+@commands.guild_only()
+@commands.has_permissions(administrator=True)
+@bot.command(aliases=['rm'])
+async def removemessages(ctx, member : discord.Member, messages):
+    conn, c = connect(ctx.guild.id)
+    c.execute("SELECT tmsgs from totalmsgCount WHERE userid = ?", (member.id,))
+    tcount = c.fetchone()
+    if int(messages) > int(tcount[0]):
+        c.execute('UPDATE totalmsgCount SET tmsgs = ? WHERE userid = ?', (newtcount, member.id))
+        conn.commit()
+    else:
+        newtcount = int(tcount[0])-int(messages)
+        c.execute('UPDATE totalmsgCount SET tmsgs = ? WHERE userid = ?', (newtcount, member.id))
+        conn.commit()
+
+    embed = systemEmbed(f"Removed {messages} messages from {member.mention}. They are now at {newtcount} messages.")
+    await ctx.send(content=None, embed=embed)
+
+@removemessages.error
+async def removemessages_error(ctx, error):
+    if isinstance(error, commands.CheckFailure):
+        embed = errorEmbed(ctx, "Failed to remove messages.", "Missing Admin Permissions")
+        await ctx.send(content=None, embed=embed)
+    if isinstance(error, commands.MissingRequiredArgument):
+        embed = errorEmbed(ctx, "Proper usage is: eb removemessages @user numberofmessages", "Incorrect Syntax")
+        await ctx.send(content=None, embed=embed)
+
 ##---------- INVITE -----------##
 @commands.guild_only()
 @bot.command()
