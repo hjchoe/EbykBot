@@ -604,7 +604,7 @@ async def manu_dlb_reset(ctx):
     
 ##---------- Admin Total Message LB Reset -----------##
 @commands.guild_only()
-@has_permissions(administrator=True)
+@commands.has_permissions(administrator=True)
 @bot.command(aliases=['rtmlb'])
 async def reset_total_mlb(ctx):
     resettmlb()
