@@ -49,27 +49,27 @@ def resetdlb():
         except:
             print(f"Leaderboard Reset Failed for {filename}")
             
-def resettmlb():
-    for filename in os.listdir('/home/ebyk/ebykdb'):
-        conn = sqlite3.connect(f"/home/ebyk/ebykdb/{filename}")
-        c = conn.cursor()
-        try:
-            c.execute('UPDATE totalmsgCount SET tmsgs = 0 WHERE tmsgs < 999999')
-            conn.commit()
-            print(f"Total Message Leaderboard Reset Succeeded for {filename}")
-        except:
-            print(f"Total Message Leaderboard Reset Failed for {filename}")
+def resettmlb(guildid):
+    filename = f"/home/ebyk/ebykdb/({guildid}) sql.db"
+    conn = sqlite3.connect(filename)
+    c = conn.cursor()
+    try:
+        c.execute('UPDATE totalmsgCount SET tmsgs = 0 WHERE tmsgs < 999999')
+        conn.commit()
+        print(f"Total Message Leaderboard Reset Succeeded for {filename}")
+    except:
+        print(f"Total Message Leaderboard Reset Failed for {filename}")
 
-def resettvclb():
-    for filename in os.listdir('/home/ebyk/ebykdb'):
-        conn = sqlite3.connect(f"/home/ebyk/ebykdb/{filename}")
-        c = conn.cursor()
-        try:
-            c.execute('UPDATE totalvcTime SET tvc = 0 WHERE tvc < 999999')
-            conn.commit()
-            print(f"Total Voice Leaderboard Reset Succeeded for {filename}")
-        except:
-            print(f"Total Voice Leaderboard Reset Failed for {filename}")
+def resettvclb(guildid):
+    filename = f"/home/ebyk/ebykdb/({guildid}) sql.db"
+    conn = sqlite3.connect(filename)
+    c = conn.cursor()
+    try:
+        c.execute('UPDATE totalvcTime SET tvc = 0 WHERE tvc < 999999')
+        conn.commit()
+        print(f"Total Voice Leaderboard Reset Succeeded for {filename}")
+    except:
+        print(f"Total Voice Leaderboard Reset Failed for {filename}")
 
 async def updatestatus():
     totalusers = 0
@@ -607,28 +607,28 @@ async def manu_dlb_reset(ctx):
 @commands.has_permissions(administrator=True)
 @bot.command(aliases=['rtmlb'])
 async def reset_total_mlb(ctx):
-    resettmlb()
+    resettmlb(ctx.guild.id)
     embed = systemEmbed("Finished manual reset of total message leaderboard")
     await ctx.send(content=None, embed=embed)
     
-@reset_total_lb.error
+@reset_total_mlb.error
 async def reset_total_mlb_error(ctx, error):
-    if isinstance(error, CheckFailure):
+    if isinstance(error, commands.CheckFailure):
         embed = errorEmbed(ctx, "Failed to reset total message leaderboard", "Missing Admin Permissions")
         await ctx.send(content=None, embed=embed)
 
 ##---------- Admin Total Voice LB Reset -----------##
 @commands.guild_only()
-@has_permissions(administrator=True)
+@commands.has_permissions(administrator=True)
 @bot.command(aliases=['rtvclb'])
 async def reset_total_vclb(ctx):
-    resettvclb()
+    resettvclb(ctx.guild.id)
     embed = systemEmbed("Finished manual reset of total voice leaderboard")
     await ctx.send(content=None, embed=embed)
     
-@reset_total_lb.error
+@reset_total_vclb.error
 async def reset_total_vclb_error(ctx, error):
-    if isinstance(error, CheckFailure):
+    if isinstance(error, commands.CheckFailure):
         embed = errorEmbed(ctx, "Failed to reset total voice leaderboard", "Missing Admin Permissions")
         await ctx.send(content=None, embed=embed)
         
@@ -636,7 +636,7 @@ async def reset_total_vclb_error(ctx, error):
 @commands.guild_only()
 @bot.command()
 async def invite(ctx):
-    embed = systemEmbed('**Invite:** https://discord.com/api/oauth2/authorize?client_id=800171925275017237&permissions=650304&scope=bot\nadd + dm **ebyk#7894** for questions or suggestions')
+    embed = systemEmbed('**Invite:** https://discord.com/api/oauth2/authorize?client_id=800171925275017237&permissions=650304&scope=bot\nadd + dm **ebyk#1660** for questions or suggestions')
     await ctx.send(content=None, embed=embed)
 
 ##---------- AVATAR -----------##
