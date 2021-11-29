@@ -642,6 +642,7 @@ async def removemessages(ctx, member : discord.Member, messages):
     c.execute("SELECT tmsgs from totalmsgCount WHERE userid = ?", (member.id,))
     tcount = c.fetchone()
     if int(messages) > int(tcount[0]):
+        newtcount = 0;
         c.execute('UPDATE totalmsgCount SET tmsgs = ? WHERE userid = ?', (newtcount, member.id))
         conn.commit()
     else:
