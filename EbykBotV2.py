@@ -4,7 +4,7 @@ import discord
 from discord.ext import tasks
 from discord.ext import commands
 
-import slash_util
+import lib.slash_util as slash_util
 import lib.embed
 import lib.economy
 import lib.sql
@@ -18,11 +18,14 @@ intents.presences = True
 
 extensions = ['cogs.general', 'cogs.leaderboards', 'cogs.info', 'cogs.econ', 'cogs.admin']
 
-bot = commands.Bot(command_prefix='.', case_insensitive=True, owner_id=329326685185114115, help_command=None, intents=intents)
+class MyBot(slash_util.Bot):
+    def __init__(self):
+        super().__init__(command_prefix=".", case_insensitive=True, owner_id=329326685185114115, help_command=None, intents=intents)
 
-if __name__ == '__main__':
-    for ext in extensions:
-        bot.load_extension(ext)
+        for ext in extensions:
+            self.load_extension(ext)
+
+bot = MyBot()
 
 ##-------------------------------------------------- DEFINITIONS ---------------------------------------------------##
 
@@ -45,18 +48,10 @@ async def resetdailylb():
 
 checkday.start()
 resetdailylb.start()
-
-#class MyBot(slash_util.Bot):
-#    def __init__(self):
-#        super().__init__(command_prefix="!")  # command prefix only applies to message based commands
-#        
-#        extensions = ['SlashTest']
-#        for ext in extensions:
-#            self.load_extension(ext)
         
-#if __name__ == '__main__':
-#    token = read_token()
-#    MyBot().run(token)
+if __name__ == '__main__':
+    token = read_token()
+    MyBot().run(token)
 
-token = read_token()
-bot.run(token)
+#token = read_token()
+#bot.run(token)

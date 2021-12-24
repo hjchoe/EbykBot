@@ -1,5 +1,5 @@
 import discord
-import slash_util
+import lib.slash_util as slash_util
 
 class MyCog(slash_util.ApplicationCog):
     @slash_util.slash_command()  # sample slash command
