@@ -3,7 +3,7 @@ import lib.slash_util as slash_util
 import lib.embed
 import lib.sql
 
-class sGeneralCog(slash_util.ApplicationCog):
+class sLeaderboardsCog(slash_util.ApplicationCog):
     ##---------- Message Count ----------##
     @slash_util.slash_command(description="Shows the messages of a user.")
     @slash_util.describe(user="The user you want the message info of.")
@@ -65,4 +65,4 @@ class sGeneralCog(slash_util.ApplicationCog):
         await ctx.send(content=None, embed=embed)
 
 def setup(bot):
-    bot.add_cog(sGeneralCog(bot))
+    bot.add_cog(sLeaderboardsCog(bot))

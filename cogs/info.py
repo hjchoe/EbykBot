@@ -85,7 +85,7 @@ class InfoCog(commands.Cog):
     @commands.command()
     async def guilds(self, ctx):
         guilds = len(self.bot.guilds)
-        embed = lib.embed.systemEmbed(f"""Currently in **{guilds}** servers.""", bot)
+        embed = lib.embed.systemEmbed(f"""Currently in **{guilds}** servers.""", self.bot)
         await ctx.send(content=None, embed=embed)
 
     ##---------- GUILDS INFO -----------##
