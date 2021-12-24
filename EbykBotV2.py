@@ -17,6 +17,7 @@ intents.messages = True
 intents.presences = True
 
 extensions = ['cogs.general', 'cogs.leaderboards', 'cogs.info', 'cogs.econ', 'cogs.admin']
+slashextensions = ['slashcogs.slashgeneral']
 
 class MyBot(slash_util.Bot):
     def __init__(self):
@@ -24,6 +25,9 @@ class MyBot(slash_util.Bot):
 
         for ext in extensions:
             self.load_extension(ext)
+
+        for sext in slashextensions:
+            self.load_extension(sext)
 
 bot = MyBot()
 
