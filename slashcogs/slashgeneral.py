@@ -13,16 +13,20 @@ class sGeneralCog(slash_util.ApplicationCog):
     ##---------- AVATAR -----------##
     @slash_util.slash_command(description="Shows the avatar of the user.")
     @slash_util.describe(user="The user you want avatar of.")
-    async def avatar(self, ctx, user: discord.Member): 
-        userave = discord.Embed(title='', description=f"""<@{user.id}>'s pfp""", color=16580705)
-        userave.set_image(url=user.avatar.url)
-        userave.set_footer(text=f"""requested by {user}""")
+    async def avatar(self, ctx, user: discord.Member=None): 
+        try:
+            userave = discord.Embed(title='', description=f"""<@{user.id}>'s pfp""", color=16580705)
+            userave.set_image(url=user.avatar.url)
+        except:
+            userave = discord.Embed(title='', description=f"""<@{ctx.author.id}>'s pfp""", color=16580705)
+            userave.set_image(url=ctx.author.avatar.url)
+        userave.set_footer(text=f"""requested by {ctx.author}""")
         await ctx.send(content=None, embed=userave)
 
     ##---------- HELP ----------##
     @slash_util.slash_command(description="Shows help menu.")
     @slash_util.describe(htype="Section of help menu (type nothing for menu of sections).")
-    async def help(self, ctx, htype: str):
+    async def help(self, ctx, htype: str=None):
         helpe = discord.Embed(title='', description="prefix: eb ___", color=3037421)
         helpe.set_author(name="Ebyk Bot Help Page", icon_url=self.bot.user.avatar.url)
         helpe.set_footer(text="Programmed by ebyk#7894, dm for questions.")
