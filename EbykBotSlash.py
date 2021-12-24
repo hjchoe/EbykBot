@@ -1,9 +1,11 @@
+
 ##-------------------------------------------------- IMPORTS ---------------------------------------------------##
 
 import discord
 from discord.ext import tasks
-import sqlite3
 from discord.ext import commands
+import slash_util
+import sqlite3
 import datetime
 from datetime import timedelta
 import random
@@ -13,11 +15,12 @@ import requests
 import os
 from threading import Thread
 from multiprocessing import Process
-intents = discord.Intents.default()
+intents = discord.Intents.all()
 intents.members = True
 intents.messages = True
+intents.presences = True
 
-bot = commands.Bot(command_prefix='.', case_insensitive=True, owner_id=329326685185114115, help_command=None, intents=intents)
+bot = commands.Bot(command_prefix='eb ', case_insensitive=True, owner_id=329326685185114115, help_command=None, intents=intents)
 
 ##-------------------------------------------------- DEFINITIONS ---------------------------------------------------##
 
@@ -1241,5 +1244,16 @@ async def resetdailylb():
 checkday.start()
 resetdailylb.start()
 
-token = read_token()
-bot.run(token)
+class MyBot(slash_util.Bot):
+    def __init__(self):
+        super().__init__(command_prefix="!")  # command prefix only applies to message based commands
+        
+        extensions = ['SlashTest']
+        for ext in extensions:
+            self.load_extension(ext)
+        
+if __name__ == '__main__':
+    token = read_token()
+    MyBot().run(token)
+
+#bot.run(token)
