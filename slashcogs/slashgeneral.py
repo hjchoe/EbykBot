@@ -61,11 +61,11 @@ class sGeneralCog(slash_util.ApplicationCog):
         helpe.set_footer(text="Join Support Server: https://discord.gg/prcN3AtNcZ")
         await ctx.channel.send(content=None, embed=helpe)
 
-        ##---------- INVITE -----------##
-        @slash_util.slash_command(description="Provides invite link for bot.")
-        async def invite(self, ctx):
-            embed = lib.embed.systemEmbed('**Invite:** https://discord.com/api/oauth2/authorize?client_id=800171925275017237&permissions=650304&scope=bot\nadd + dm **ebyk#1660** for questions or suggestions')
-            await ctx.send(content=None, embed=embed)
+    ##---------- INVITE -----------##
+    @slash_util.slash_command(description="Provides invite link for bot.")
+    async def invite(self, ctx):
+        embed = lib.embed.systemEmbed('**Invite:** https://discord.com/api/oauth2/authorize?client_id=800171925275017237&permissions=650304&scope=bot\nadd + dm **ebyk#1660** for questions or suggestions', self.bot)
+        await ctx.send(content=None, embed=embed)
 
 def setup(bot):
     bot.add_cog(sGeneralCog(bot))

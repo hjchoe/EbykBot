@@ -84,7 +84,7 @@ class LeaderboardsCog(commands.Cog):
                 return
 
             if self.bot.user.mentioned_in(message) and not message.mention_everyone:
-                embed = lib.embed.systemEmbed("**prefix:** eb ___\nSend `eb help` for my help menu!")
+                embed = lib.embed.systemEmbed("**prefix:** eb ___\nSend `eb help` for my help menu!", self.bot)
                 await message.channel.send(content=None, embed=embed)
 
             if message.guild is None and message.author is not self.bot.user and not 'eb help' in message.content.lower():

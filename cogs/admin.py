@@ -20,7 +20,7 @@ class AdminCog(commands.Cog):
     @commands.command()
     async def manu_dlb_reset(self, ctx):
         lib.sql.resetdlb()
-        embed = lib.embed.systemEmbed("Attempted manual reset of daily leaderboard")
+        embed = lib.embed.systemEmbed("Attempted manual reset of daily leaderboard", self.bot)
         await ctx.send(content=None, embed=embed)
         
     ##---------- Admin Total Message LB Reset -----------##
@@ -29,7 +29,7 @@ class AdminCog(commands.Cog):
     @commands.command(aliases=['rtmlb'])
     async def reset_total_mlb(self, ctx):
         lib.sql.resettmlb(ctx.guild.id)
-        embed = lib.embed.systemEmbed("Finished manual reset of total message leaderboard")
+        embed = lib.embed.systemEmbed("Finished manual reset of total message leaderboard", self.bot)
         await ctx.send(content=None, embed=embed)
         
     @reset_total_mlb.error
@@ -44,7 +44,7 @@ class AdminCog(commands.Cog):
     @commands.command(aliases=['rtvclb'])
     async def reset_total_vclb(self, ctx):
         lib.sql.resettvclb(ctx.guild.id)
-        embed = lib.embed.systemEmbed("Finished manual reset of total voice leaderboard")
+        embed = lib.embed.systemEmbed("Finished manual reset of total voice leaderboard", self.bot)
         await ctx.send(content=None, embed=embed)
         
     @reset_total_vclb.error
@@ -70,7 +70,7 @@ class AdminCog(commands.Cog):
             c.execute('UPDATE totalmsgCount SET tmsgs = ? WHERE userid = ?', (newtcount, member.id))
             conn.commit()
 
-        embed = lib.embed.systemEmbed(f"Removed {messages} messages from {member.mention}. They are now at {newtcount} messages.")
+        embed = lib.embed.systemEmbed(f"Removed {messages} messages from {member.mention}. They are now at {newtcount} messages.", self.bot)
         await ctx.send(content=None, embed=embed)
 
     @removemessages.error
