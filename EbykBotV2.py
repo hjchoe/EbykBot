@@ -9,8 +9,8 @@ import lib.embed
 import lib.economy
 import lib.sql
 
+import time
 import datetime
-from multiprocessing import Process
 intents = discord.Intents.all()
 intents.members = True
 intents.messages = True
@@ -37,6 +37,50 @@ def read_token():
     with open("testtoken.txt", "r") as f:
         lines = f.readlines()
         return lines[0].strip()
+
+##---------- Update Message -----------##
+@commands.is_owner()
+@bot.command()
+async def updatemsg(ctx):
+    guilds = len(bot.guilds)
+    embed = lib.embed.systemEmbed(f"""~ **EbykBot V2.0 UPDATE ANNOUNCEMENT** ~\n\nThank you for using Ebyk Bot!\nI'm happy to say we have reached **~88 servers** and **~300,000 users**!\nI couldn't have done it without you guys\n\nEbykBot V2.0 has been released with changes according to discord's new API\n**PLEASE** feel free to add me at ebyk#1660 and message me with bugs or suggestions\n""", bot)
+    embed.add_field(name="Change Log", value=f"""\n- reorganization of bot infrastructure using libraries and cogs\n- removal of snipe and esnipe commands due to message intent changes from discord\n- implementation of slash commands\n\n*Join the support server at: https://discord.gg/prcN3AtNcZ*""", inline=False)
+    failed = []
+    for server in bot.guilds:
+        try:
+            member = discord.utils.get(server.members, id=server.owner_id)
+            await member.send(content=None, embed=embed)
+            print(f"message sent [{server.name}]")
+            time.sleep(1)
+        except:
+            print(f"message FAILED [{server.name}]")
+            failed.append(server)
+            pass
+    
+
+    print(f"\n\nSECOND ATTEMPT\n\n")
+    time.sleep(30)
+    for server in failed:
+        try:
+            member = discord.utils.get(server.members, id=server.owner_id)
+            await member.send(content=None, embed=embed)
+            print(f"message sent [{server.name}]")
+            time.sleep(10)
+        except:
+            print(f"message FAILED [{server.name}]")
+            pass
+
+
+    print("done")
+
+##---------- Update Test -----------##
+@commands.is_owner()
+@bot.command()
+async def updatemsgtest(ctx):
+    guilds = len(bot.guilds)
+    embed = lib.embed.systemEmbed(f"""~ **EbykBot V2.0 UPDATE ANNOUNCEMENT** ~\n\nThank you for using Ebyk Bot!\nI'm happy to say we have reached **~88 servers** and **~300,000 users**!\nI couldn't have done it without you guys\n\nEbykBot V2.0 has been released with changes according to discord's new API\n**PLEASE** feel free to add me at ebyk#1660 and message me with bugs or suggestions\n""", bot)
+    embed.add_field(name="Change Log", value=f"""\n- reorganization of bot infrastructure using libraries and cogs\n- removal of snipe and esnipe commands due to message intent changes from discord\n- implementation of slash commands\n\n*Join the support server at: https://discord.gg/prcN3AtNcZ*""", inline=False)
+    await ctx.send(content=None, embed=embed)
 
 @tasks.loop(hours=12.0)
 async def checkday():
