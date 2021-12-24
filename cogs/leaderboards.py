@@ -48,7 +48,7 @@ class LeaderboardsCog(commands.Cog):
     ##---------- Vc Time ----------##
     @commands.guild_only()
     @commands.command()
-    async def vc(self, ctx, member : discord.Member=None, not_required=None):
+    async def vc(self, ctx, member : discord.Member=None):
         if member == None:
             userid = ctx.author.id
         else:
