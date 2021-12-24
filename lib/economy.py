@@ -1,3 +1,6 @@
+import random
+from . import sql
+
 ##---------- ECONOMY -----------##
 
 def flipcoin():
@@ -58,7 +61,7 @@ def transaction(userid, guildid, win, betamt, bank):
         bank += betamt
     else:
         bank -= betamt
-    conn, c = connect(guildid)
+    conn, c = sql.connect(guildid)
     try:
         c.execute('UPDATE bank SET money = ? WHERE userid = ?', (bank, userid))
         conn.commit()
@@ -67,37 +70,17 @@ def transaction(userid, guildid, win, betamt, bank):
     return bank
 
 def givetransaction(userid, memberid, guildid, amount):
-    ubank = balancegrab(userid, guildid)
-    rbank = balancegrab(memberid, guildid)
+    ubank = sql.balancegrab(userid, guildid)
+    rbank = sql.balancegrab(memberid, guildid)
     ubank = int(ubank)
     rbank = int(rbank)
     amount = int(amount)
     ubank -= amount
     rbank += amount
-    conn, c = connect(guildid)
+    conn, c = sql.connect(guildid)
     try:
         c.execute('UPDATE bank SET money = ? WHERE userid = ?', (ubank, userid))
         c.execute('UPDATE bank SET money = ? WHERE userid = ?', (rbank, memberid))
-        conn.commit()
-    except:
-        pass
-
-def snipecountdown(message):
-    time.sleep(10)
-    channelid = message.channel.id
-    conn, c = connect(message.guild.id)
-    try:
-        c.execute('DELETE FROM deletedmsg WHERE channelid = ?', (channelid,))
-        conn.commit()
-    except:
-        pass
-
-def esnipecountdown(message):
-    time.sleep(10)
-    channelid = message.channel.id
-    conn, c = connect(message.guild.id)
-    try:
-        c.execute('DELETE FROM editedmsg WHERE channelid = ?', (channelid,))
         conn.commit()
     except:
         pass
