@@ -2,9 +2,6 @@ import discord
 import lib.slash_util as slash_util
 
 class MyCog(slash_util.ApplicationCog):
-    def __init__(self, bot):
-    self.bot = bot
-
     @slash_util.slash_command(description="Shows the avatar of the user.")
     @slash_util.describe(user="The user you want avatar of.")
     async def avatar(self, ctx, user: discord.Member): 

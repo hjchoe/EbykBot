@@ -55,7 +55,7 @@ resetdailylb.start()
         
 if __name__ == '__main__':
     token = read_token()
-    MyBot().run(token)
+    bot.run(token)
 
 #token = read_token()
 #bot.run(token)
