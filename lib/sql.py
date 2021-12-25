@@ -1,8 +1,8 @@
 import os
 import sqlite3
 
-#dbdir = "/home/ebyk/ebykdb/"
-dbdir = "/Users/personal/Documents/GitHub/EbykBot/ebykdb/"
+dbdir = "/home/ebyk/EbykBot/ebykdb/"
+#dbdir = "/Users/personal/Documents/GitHub/EbykBot/ebykdb/"
 
 ##---------- SQL CONNECT -----------##
 def connect(guildid):
