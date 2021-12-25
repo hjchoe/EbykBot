@@ -57,14 +57,21 @@ class InfoCog(commands.Cog):
         whois.add_field(name='Owner', value=f"{guild.owner.mention} [{guild.owner_id}]", inline=False)
         whois.add_field(name='Id', value=guild.id, inline=False)
         whois.add_field(name='Created On', value=guild.created_at.strftime("%b %d %Y [*%H:%M:%S*]"), inline=False)
-        whois.add_field(name='Region', value=guild.region, inline=False)
 
-        whois.add_field(name='Stats', value=f"**Members:** {guild.member_count}\n**Categories:** {len(guild.categories)}\n**Text Channels:** {len(guild.text_channels)}\n**Voice Channels:** {len(guild.voice_channels)}\n**Roles:** {len(guild.roles)}\n**Emojis:** {len(guild.emojis)}", inline=False)
+        whois.add_field(name='Stats', value=f"**Members:** {guild.member_count}\n**Categories:** {len(guild.categories)}\n**Text Channels:** {len(guild.text_channels)}\n**Voice Channels:** {len(guild.voice_channels)}\n**Roles:** {len(guild.roles)}\n**Emojis:** {len(guild.emojis)}\n**Stickers:** {len(guild.stickers)}", inline=False)
 
         whois.add_field(name='Nitro Server Boosts', value=f"**Tier:** {guild.premium_tier}\n**Boosters:** {guild.premium_subscription_count}", inline=False)
 
-        await ctx.send(content=None, embed=whois)
+        features = ""
+        if guild.features:
+            for f in guild.features:
+                features+=f"{f}\n"
+        else:
+            features = "None"
+        whois.add_field(name='Unlocked Features', value=features, inline=False)
 
+        await ctx.send(content=None, embed=whois)
+    
     ##---------- NITROBOOST -----------##
     @commands.guild_only()
     @commands.command()
