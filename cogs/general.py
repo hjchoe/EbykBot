@@ -80,7 +80,7 @@ class GeneralCog(commands.Cog):
     @commands.guild_only()
     @commands.command()
     async def invite(self, ctx):
-        embed = lib.embed.systemEmbed('**Invite:** https://discord.com/api/oauth2/authorize?client_id=800171925275017237&permissions=2147609664&scope=bot\nadd + dm **ebyk#1660** for questions or suggestions', self.bot)
+        embed = lib.embed.systemEmbed('**Invite:** https://discord.com/api/oauth2/authorize?client_id=800171925275017237&permissions=277025508416&scope=bot%20applications.commands\nadd + dm **ebyk#1660** for questions or suggestions', self.bot)
         await ctx.send(content=None, embed=embed)
 
     @commands.Cog.listener()

@@ -547,5 +547,3 @@ class ApplicationCog(commands.Cog, Generic[BotT]):
         
         ctx = Context(self.bot, command, interaction)
         await command.invoke(ctx, **params)
-
-
