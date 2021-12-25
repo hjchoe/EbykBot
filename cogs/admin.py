@@ -3,25 +3,9 @@ from discord.ext import commands
 import lib.embed
 import lib.sql
 
-async def updatestatus(bot):
-    totalusers = 0
-    for server in bot.guilds:
-        totalusers += len(server.members)
-    activity = discord.Game(name=f"{totalusers} users! | eb h for help")
-    await bot.change_presence(status=discord.Status.online, activity=activity)
-
 class AdminCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-
-    ##---------- Manual Daily LB Reset -----------##
-    @commands.guild_only()
-    @commands.is_owner()
-    @commands.command()
-    async def manu_dlb_reset(self, ctx):
-        lib.sql.resetdlb()
-        embed = lib.embed.systemEmbed("Attempted manual reset of daily leaderboard", self.bot)
-        await ctx.send(content=None, embed=embed)
         
     ##---------- Admin Total Message LB Reset -----------##
     @commands.guild_only()
@@ -33,7 +17,7 @@ class AdminCog(commands.Cog):
         await ctx.send(content=None, embed=embed)
         
     @reset_total_mlb.error
-    async def reset_total_mlb_error(ctx, error):
+    async def reset_total_mlb_error(self, ctx, error):
         if isinstance(error, commands.CheckFailure):
             embed = lib.embed.errorEmbed(ctx, "Failed to reset total message leaderboard", "Missing Admin Permissions")
             await ctx.send(content=None, embed=embed)
@@ -48,7 +32,7 @@ class AdminCog(commands.Cog):
         await ctx.send(content=None, embed=embed)
         
     @reset_total_vclb.error
-    async def reset_total_vclb_error(ctx, error):
+    async def reset_total_vclb_error(self, ctx, error):
         if isinstance(error, commands.CheckFailure):
             embed = lib.embed.errorEmbed(ctx, "Failed to reset total voice leaderboard", "Missing Admin Permissions")
             await ctx.send(content=None, embed=embed)
@@ -74,7 +58,7 @@ class AdminCog(commands.Cog):
         await ctx.send(content=None, embed=embed)
 
     @removemessages.error
-    async def removemessages_error(ctx, error):
+    async def removemessages_error(self, ctx, error):
         if isinstance(error, commands.CheckFailure):
             embed = lib.embed.errorEmbed(ctx, "Failed to remove messages.", "Missing Admin Permissions")
             await ctx.send(content=None, embed=embed)

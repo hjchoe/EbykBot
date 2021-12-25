@@ -34,7 +34,7 @@ class EconCog(commands.Cog):
         await ctx.send(content=None, embed=embed)
 
     @coinflip.error
-    async def coinflip_error(ctx, error):
+    async def coinflip_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             embed = lib.embed.errorEmbed(ctx, "Please use the command properly: `.cf coinside betamount`", "Invalid Command Error")
             await ctx.send(content=None, embed=embed)

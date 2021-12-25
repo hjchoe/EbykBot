@@ -59,7 +59,7 @@ class LeaderboardsCog(commands.Cog):
 
     ##---------- Vc Time Leaderboard ----------##
     @commands.guild_only()
-    @commands.command()
+    @commands.command(aliases=['vcleaderboard'])
     async def vclb(self, ctx):
         lb = lib.sql.vcleaderboard(ctx.guild.id)
         embed = lib.embed.lbEmbed(ctx, "Weekly", lb)
@@ -67,7 +67,7 @@ class LeaderboardsCog(commands.Cog):
 
     ##---------- Total Vc Time Leaderboard ----------##
     @commands.guild_only()
-    @commands.command()
+    @commands.command(aliases=['tvcleaderboard'])
     async def tvclb(self, ctx):
         lb = lib.sql.tvcleaderboard(ctx.guild.id)
         embed = lib.embed.lbEmbed(ctx, "Total", lb)
