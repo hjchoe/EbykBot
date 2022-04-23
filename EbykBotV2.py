@@ -8,7 +8,7 @@ import lib.slash_util as slash_util
 import lib.embed
 import lib.economy
 import lib.sql
-import cogs.general
+"""import cogs.general"""
 
 import time
 import datetime
@@ -117,10 +117,12 @@ async def updatemsgtest(ctx):
     await ctx.send(content=None, embed=embed2)
     number = 0
 
+"""
 @tasks.loop(hours=1.0)
 async def updatestats():
     await bot.wait_until_ready()
     general.updatestatus()
+"""
     
 @tasks.loop(hours=12.0)
 async def checkday():
@@ -134,7 +136,7 @@ async def resetdailylb():
     await bot.wait_until_ready()
     lib.sql.resetdlb()
 
-updatestatus.start()
+"""updatestatus.start()"""
 checkday.start()
 resetdailylb.start()
         
