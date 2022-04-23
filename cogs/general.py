@@ -4,10 +4,12 @@ import lib.embed
 import lib.sql
 
 async def updatestatus(bot):
+    """
     totalusers = 0
     for server in bot.guilds:
         totalusers += len(server.members)
-    activity = discord.Game(name=f"{totalusers} users! | eb h for help")
+    """
+    activity = discord.Game(name=f"eb h for help | ebyk#1660")
     await bot.change_presence(status=discord.Status.online, activity=activity)
 
 class GeneralCog(commands.Cog):
