@@ -136,7 +136,7 @@ async def resetdailylb():
     await bot.wait_until_ready()
     lib.sql.resetdlb()
 
-updatestatus.start()
+updatestats.start()
 checkday.start()
 resetdailylb.start()
         
