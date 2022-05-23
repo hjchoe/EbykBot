@@ -12,10 +12,10 @@ import lib.sql
 
 import time
 import datetime
-intents = discord.Intents.all()
-intents.members = True
+intents = discord.Intents.default()
 intents.messages = True
-intents.presences = True
+intents.members = False
+intents.presences = False
 
 extensions = ['cogs.general', 'cogs.leaderboards', 'cogs.info', 'cogs.econ', 'cogs.admin']
 slashextensions = ['slashcogs.slashgeneral', 'slashcogs.slashleaderboards', 'slashcogs.slashinfo', 'slashcogs.slashecon', 'slashcogs.slashadmin']
