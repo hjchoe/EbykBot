@@ -121,7 +121,7 @@ async def updatemsgtest(ctx):
 @tasks.loop(hours=1.0)
 async def updatestats():
     await bot.wait_until_ready()
-    general.updatestatus()
+    await cogs.general.updatestatus(bot)
 
     
 @tasks.loop(hours=12.0)

@@ -25,7 +25,7 @@ class LeaderboardsCog(commands.Cog):
     @commands.guild_only()
     @commands.command(aliases=['mleaderboard'])
     async def mlb(self, ctx):
-        lb = lib.sql.messageleaderboard(ctx.guild.id)
+        lb = await lib.sql.messageleaderboard(self.bot, ctx.guild.id)
         embed = lib.embed.lbEmbed(ctx, "Weekly", lb)
         await ctx.send(content=None, embed=embed)
 
@@ -33,7 +33,7 @@ class LeaderboardsCog(commands.Cog):
     @commands.guild_only()
     @commands.command(aliases=['tmleaderboard'])
     async def tmlb(self, ctx):
-        lb = lib.sql.tmessageleaderboard(ctx.guild.id)
+        lb = await lib.sql.tmessageleaderboard(self.bot, ctx.guild.id)
         embed = lib.embed.lbEmbed(ctx, "Total", lb)
         await ctx.send(content=None, embed=embed)
 
@@ -41,7 +41,7 @@ class LeaderboardsCog(commands.Cog):
     @commands.guild_only()
     @commands.command(aliases=['dmleaderboard'])
     async def dmlb(self, ctx):
-        lb = lib.sql.dmessageleaderboard(ctx.guild.id)
+        lb = await lib.sql.dmessageleaderboard(self.bot, ctx.guild.id)
         embed = lib.embed.lbEmbed(ctx, "Daily", lb)
         await ctx.send(content=None, embed=embed)
 
@@ -61,7 +61,7 @@ class LeaderboardsCog(commands.Cog):
     @commands.guild_only()
     @commands.command(aliases=['vcleaderboard'])
     async def vclb(self, ctx):
-        lb = lib.sql.vcleaderboard(ctx.guild.id)
+        lb = await lib.sql.vcleaderboard(self.bot, ctx.guild.id)
         embed = lib.embed.lbEmbed(ctx, "Weekly", lb)
         await ctx.send(content=None, embed=embed)
 
@@ -69,7 +69,7 @@ class LeaderboardsCog(commands.Cog):
     @commands.guild_only()
     @commands.command(aliases=['tvcleaderboard'])
     async def tvclb(self, ctx):
-        lb = lib.sql.tvcleaderboard(ctx.guild.id)
+        lb = await lib.sql.tvcleaderboard(self.bot, ctx.guild.id)
         embed = lib.embed.lbEmbed(ctx, "Total", lb)
         await ctx.send(content=None, embed=embed)
 
@@ -77,9 +77,7 @@ class LeaderboardsCog(commands.Cog):
     async def on_message(self, message):
         #await self.bot.process_commands(message)
         ctx = await self.bot.get_context(message)
-        if ctx.valid:
-            pass
-        else:
+        if not ctx.valid:
             if message.author.bot:
                 return
 

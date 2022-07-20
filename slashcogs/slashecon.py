@@ -45,7 +45,7 @@ class sEconCog(slash_util.ApplicationCog):
     ##---------- Balance Leaderboard ----------##
     @slash_util.slash_command(description="Shows balance leaderboard.")
     async def balanceleaderboard(self, ctx):
-        lb = lib.sql.balleaderboard(ctx.guild.id)
+        lb = await lib.sql.balleaderboard(self.bot, ctx.guild.id)
         embed = lib.embed.lbEmbed(ctx, "Bank", lb)
         await ctx.send(content=None, embed=embed)
 

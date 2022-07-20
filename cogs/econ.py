@@ -56,7 +56,7 @@ class EconCog(commands.Cog):
     @commands.guild_only()
     @commands.command(aliases=['bleaderboard'])
     async def blb(self, ctx):
-        lb = lib.sql.balleaderboard(ctx.guild.id)
+        lb = await lib.sql.balleaderboard(self.bot, ctx.guild.id)
         embed = lib.embed.lbEmbed(ctx, "Bank", lb)
         await ctx.send(content=None, embed=embed)
 

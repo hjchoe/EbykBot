@@ -20,21 +20,21 @@ class sLeaderboardsCog(slash_util.ApplicationCog):
     ##---------- Message Leaderboard ----------##
     @slash_util.slash_command(description="Shows the weekly message leaderboard.")
     async def weeklymessageleaderboard(self, ctx):
-        lb = lib.sql.messageleaderboard(ctx.guild.id)
+        lb = await lib.sql.messageleaderboard(self.bot, ctx.guild.id)
         embed = lib.embed.lbEmbed(ctx, "Weekly", lb)
         await ctx.send(content=None, embed=embed)
     
     ##---------- Total Message Leaderboard ----------##
     @slash_util.slash_command(description="Shows the total message leaderboard.")
     async def totalmessageleaderboard(self, ctx):
-        lb = lib.sql.tmessageleaderboard(ctx.guild.id)
+        lb = await lib.sql.tmessageleaderboard(self.bot, ctx.guild.id)
         embed = lib.embed.lbEmbed(ctx, "Total", lb)
         await ctx.send(content=None, embed=embed)
     
     ##---------- Daily Message Leaderboard ----------##
     @slash_util.slash_command(description="Shows the daily message leaderboard.")
     async def dailymessageleaderboard(self, ctx):
-        lb = lib.sql.dmessageleaderboard(ctx.guild.id)
+        lb = await lib.sql.dmessageleaderboard(self.bot, ctx.guild.id)
         embed = lib.embed.lbEmbed(ctx, "Daily", lb)
         await ctx.send(content=None, embed=embed)
 
@@ -53,14 +53,14 @@ class sLeaderboardsCog(slash_util.ApplicationCog):
     ##---------- Vc Time Leaderboard ----------##
     @slash_util.slash_command(description="Shows the weekly vc time leaderboard.")
     async def weeklyvcleaderboard(self, ctx):
-        lb = lib.sql.vcleaderboard(ctx.guild.id)
+        lb = await lib.sql.vcleaderboard(self.bot, ctx.guild.id)
         embed = lib.embed.lbEmbed(ctx, "Weekly", lb)
         await ctx.send(content=None, embed=embed)
 
     ##---------- Total Vc Time Leaderboard ----------##
     @slash_util.slash_command(description="Shows the total vc time leaderboard.")
     async def totalvcleaderboard(self, ctx):
-        lb = lib.sql.tvcleaderboard(ctx.guild.id)
+        lb = await lib.sql.tvcleaderboard(self.bot, ctx.guild.id)
         embed = lib.embed.lbEmbed(ctx, "Total", lb)
         await ctx.send(content=None, embed=embed)
 
