@@ -14,7 +14,7 @@ class sLeaderboardsCog(slash_util.ApplicationCog):
             userid = user.id
         umsgcount, tmsgcount, dmsgcount = lib.sql.messagecount(userid, ctx.guild.id)
 
-        embed = lib.embed.messageEmbed(ctx, userid, umsgcount, tmsgcount, dmsgcount)
+        embed = await lib.embed.messageEmbed(ctx, userid, umsgcount, tmsgcount, dmsgcount)
         await ctx.send(content=None, embed=embed)
 
     ##---------- Message Leaderboard ----------##
@@ -47,7 +47,7 @@ class sLeaderboardsCog(slash_util.ApplicationCog):
         else:
             userid = user.id
         hours, minutes, thours, tminutes = lib.sql.vcount(userid, ctx.guild.id)
-        embed = lib.embed.vcEmbed(ctx, userid, hours, minutes, thours, tminutes)
+        embed = await lib.embed.vcEmbed(ctx, userid, hours, minutes, thours, tminutes)
         await ctx.send(content=None, embed=embed)
 
     ##---------- Vc Time Leaderboard ----------##

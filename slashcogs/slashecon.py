@@ -39,7 +39,7 @@ class sEconCog(slash_util.ApplicationCog):
             userid = user.id
         moneyamt = lib.sql.balancegrab(userid, ctx.guild.id)
 
-        embed = lib.embed.balEmbed(ctx, userid, moneyamt)
+        embed = await lib.embed.balEmbed(ctx, userid, moneyamt)
         await ctx.send(content=None, embed=embed)
 
     ##---------- Balance Leaderboard ----------##

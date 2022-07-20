@@ -16,15 +16,17 @@ def systemEmbed(content, bot):
     embed.set_author(name=bot.user.name, icon_url=bot.user.avatar.url)
     return embed
 
-def messageEmbed(ctx, userid, messages, tmessages, dmessages):
+async def messageEmbed(ctx, userid, messages, tmessages, dmessages):
     embed = discord.Embed(title='', description=f"**Daily:** {dmessages} messages\n**Weekly:** {messages} messages\n**Total:** {tmessages} messages", color=16645526)
-    member = discord.utils.get(ctx.author.guild.members, id=userid)
+    # member = discord.utils.get(ctx.author.guild.members, id=userid)
+    member = await ctx.guild.fetch_member(userid)
     embed.set_author(name=f"""{member.name}'s # of messages""", icon_url=member.avatar.url)
     return embed
 
-def vcEmbed(ctx, userid, hours, minutes, thours, tminutes):
+async def vcEmbed(ctx, userid, hours, minutes, thours, tminutes):
     embed = discord.Embed(title='', description=f"**Weekly:** \n**{hours}** hours and **{minutes}** minutes \n\n**Total:** \n**{thours}** hours and **{tminutes}** minutes", color=16645526)
-    member = discord.utils.get(ctx.author.guild.members, id=userid)
+    # member = discord.utils.get(ctx.author.guild.members, id=userid)
+    member = await ctx.guild.fetch_member(userid)
     embed.set_author(name=f"""{member.name}'s vc time""", icon_url=member.avatar.url)
     return embed
 
@@ -33,9 +35,10 @@ def lbEmbed(ctx, title, lb):
     embed.set_author(name=f"""{ctx.guild.name}'s {title} Leaderboard""", icon_url=ctx.guild.icon.url)
     return embed
 
-def balEmbed(ctx, userid, amt):
+async def balEmbed(ctx, userid, amt):
     embed = discord.Embed(title='', description=f"Balance: **${amt}**", color=16645526)
-    member = discord.utils.get(ctx.author.guild.members, id=userid)
+    # member = discord.utils.get(ctx.author.guild.members, id=userid)
+    member = await ctx.guild.fetch_member(userid)
     embed.set_author(name=f"""{member.name}'s Bank""", icon_url=member.avatar.url)
     return embed
 
