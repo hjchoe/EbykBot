@@ -15,10 +15,17 @@ def connect(guildid):
     c.execute('CREATE TABLE IF NOT EXISTS vcTime(userid VARCHAR(255), vc INT)')
     c.execute('CREATE TABLE IF NOT EXISTS "totalvcTime"("userid" VARCHAR(255), "tvc" INT)')
     c.execute('CREATE TABLE IF NOT EXISTS timeLog(userid VARCHAR(255), jTime DATETIME)')
-    c.execute('CREATE TABLE IF NOT EXISTS partnerCount(userid VARCHAR(255), partners INT)')
     c.execute('CREATE TABLE IF NOT EXISTS bank(userid VARCHAR(255), money INT)')
-    c.execute('CREATE TABLE IF NOT EXISTS deletedmsg(channelid VARCHAR(255), userid VARCHAR(255), content VARCHAR(255))')
-    c.execute('CREATE TABLE IF NOT EXISTS editedmsg(channelid VARCHAR(255), userid VARCHAR(255), before VARCHAR(255), after VARCHAR(255))')
+    conn.commit()
+    return conn, c
+
+def glb_connect():
+    filename = f"{dbdir}guildmessages.db"
+    conn = sqlite3.connect(filename)
+    c = conn.cursor()
+    c.execute('CREATE TABLE IF NOT EXISTS guildmsgcount(guildid VARCHAR(255), msgs INT)')
+    c.execute('CREATE TABLE IF NOT EXISTS guildvctime(guildid VARCHAR(255), vc INT)')
+    c.execute('CREATE TABLE IF NOT EXISTS invitecode(guildid VARCHAR(255), code VARCHAR(255))')
     conn.commit()
     return conn, c
 
@@ -57,7 +64,7 @@ def messagecount(userid, guildid):
     except:
         return None
 
-def messageleaderboard(guildid):
+async def messageleaderboard(bot, guildid):
     conn, c = connect(guildid)
     try:
         c.execute('SELECT userid FROM msgCount ORDER BY msgs DESC')
@@ -74,14 +81,16 @@ def messageleaderboard(guildid):
             user = sqlTOstr(all_user[x])
             msgs = sqlTOstr(all_msgs[x])
             try:
-                the_list += f'{str(x + 1)}. <@{user}> - **{msgs} messages **\n'
+                guildobject = bot.get_guild(guildid)
+                userobject = await guildobject.fetch_member(user)
+                the_list += f'{str(x + 1)}. {userobject.mention} - **{msgs} messages **\n'
             except:
                 pass
         return the_list
     except:
         return None
 
-def tmessageleaderboard(guildid):
+async def tmessageleaderboard(bot, guildid):
     conn, c = connect(guildid)
     try:
         c.execute('SELECT userid FROM totalmsgCount ORDER BY tmsgs DESC')
@@ -99,14 +108,16 @@ def tmessageleaderboard(guildid):
             user = sqlTOstr(all_user[x])
             msgs = sqlTOstr(all_msgs[x])
             try:
-                the_list += f'{str(x + 1)}. <@{user}> - **{msgs} messages **\n'
+                guildobject = bot.get_guild(guildid)
+                userobject = await guildobject.fetch_member(user)
+                the_list += f'{str(x + 1)}. {userobject.mention} - **{msgs} messages **\n'
             except:
                 pass
         return the_list
     except:
         return None
 
-def dmessageleaderboard(guildid):
+async def dmessageleaderboard(bot, guildid):
     conn, c = connect(guildid)
     try:
         c.execute('SELECT userid FROM dmsgCount ORDER BY dmsgs DESC')
@@ -124,14 +135,16 @@ def dmessageleaderboard(guildid):
             user = sqlTOstr(all_user[x])
             msgs = sqlTOstr(all_msgs[x])
             try:
-                the_list += f'{str(x + 1)}. <@{user}> - **{msgs} messages **\n'
+                guildobject = bot.get_guild(guildid)
+                userobject = await guildobject.fetch_member(user)
+                the_list += f'{str(x + 1)}. {userobject.mention} - **{msgs} messages **\n'
             except:
                 pass
         return the_list
     except:
         return None
 
-def vcleaderboard(guildid):
+async def vcleaderboard(bot, guildid):
     conn, c = connect(guildid)
     try:
         c.execute('SELECT userid FROM vcTime ORDER BY vc DESC')
@@ -156,14 +169,17 @@ def vcleaderboard(guildid):
                 vc -= 60
 
             try:
-                the_vclist += f'{str(x + 1)}. <@{user}> - **{vchours} hours and {vc} minutes **\n'
+                guildobject = bot.get_guild(guildid)
+                userobject = await guildobject.fetch_member(user)
+                the_vclist += f'{str(x + 1)}. {userobject.mention} - **{vchours} hours and {vc} minutes **\n'
             except:
                 pass
+
         return the_vclist
     except:
         return None
 
-def tvcleaderboard(guildid):
+async def tvcleaderboard(bot, guildid):
     conn, c = connect(guildid)
     try:
         c.execute('SELECT userid FROM totalvcTime ORDER BY tvc DESC')
@@ -188,7 +204,205 @@ def tvcleaderboard(guildid):
                 vc -= 60
 
             try:
-                the_vclist += f'{str(x + 1)}. <@{user}> - **{vchours} hours and {vc} minutes **\n'
+                guildobject = bot.get_guild(guildid)
+                userobject = await guildobject.fetch_member(user)
+                the_vclist += f'{str(x + 1)}. {userobject.mention} - **{vchours} hours and {vc} minutes **\n'
+            except:
+                pass
+        return the_vclist
+    except:
+        return None
+    
+def vcount(userid, guildid):
+    conn, c = connect(guildid)
+    try:
+        c.execute("SELECT vc FROM vcTime WHERE userid = ?", (userid,))
+        vcount = c.fetchone()
+        c.execute("SELECT tvc from totalvcTime WHERE userid = ?", (userid,))
+        tvcount = c.fetchone()
+
+        if vcount is None:
+            vcount = 0
+
+        if tvcount is None:
+            tvcount = 0
+
+        uvctime = int(sqlTOstr(vcount))
+        tuvctime = int(sqlTOstr(tvcount))
+        userhours = 0
+        tuserhours = 0
+
+        while uvctime > 60:
+            userhours += 1
+            uvctime -= 60
+
+        while tuvctime > 60:
+            tuserhours += 1
+            tuvctime -= 60
+
+        return userhours, uvctime, tuserhours, tuvctime
+    except:
+        return None
+
+def glb_messagecount(guildid):
+    conn, c = glb_connect()
+    try:
+        c.execute("SELECT msgs FROM guildmsgcount WHERE guildid = ?", (guildid,))
+        count = c.fetchone()
+
+        if count is None:
+            count = 0
+
+        umsgcount = sqlTOstr(count)
+        return umsgcount
+    except:
+        return None
+
+async def glb_messageleaderboard(bot):
+    conn, c = glb_connect()
+    try:
+        c.execute('SELECT guildid FROM guildmsgcount ORDER BY msgs DESC')
+        all_guild = c.fetchall()
+        c.execute('SELECT msgs FROM guildmsgcount ORDER BY msgs DESC')
+        all_msgs = c.fetchall()
+
+        if len(all_guild) < 10:
+            listrange = len(all_guild)
+        else:
+            listrange = 10
+        the_list = ''
+        for x in range(listrange):
+            guild = sqlTOstr(all_guild[x])
+            msgs = sqlTOstr(all_msgs[x])
+            c.execute("SELECT code FROM invitecode WHERE guildid = ?", (guild,))
+            code = c.fetchone()
+            invitecode = sqlTOstr(code)
+            try:
+                guildobject = bot.get_guild(guild)
+                the_list += f'{str(x + 1)}. {guild.name} - **{msgs} messages ** [ invite code: {invitecode} ]\n'
+            except:
+                pass
+        return the_list
+    except:
+        return None
+
+async def tmessageleaderboard(bot, guildid):
+    conn, c = connect(guildid)
+    try:
+        c.execute('SELECT userid FROM totalmsgCount ORDER BY tmsgs DESC')
+        all_user = c.fetchall()
+        c.execute('SELECT tmsgs FROM totalmsgCount ORDER BY tmsgs DESC')
+        all_msgs = c.fetchall()
+
+        if len(all_user) < 10:
+            listrange = len(all_user)
+        else:
+            listrange = 10
+
+        the_list = ''
+        for x in range(listrange):
+            user = sqlTOstr(all_user[x])
+            msgs = sqlTOstr(all_msgs[x])
+            try:
+                guildobject = bot.get_guild(guildid)
+                userobject = await guildobject.fetch_member(user)
+                the_list += f'{str(x + 1)}. {userobject.mention} - **{msgs} messages **\n'
+            except:
+                pass
+        return the_list
+    except:
+        return None
+
+async def dmessageleaderboard(bot, guildid):
+    conn, c = connect(guildid)
+    try:
+        c.execute('SELECT userid FROM dmsgCount ORDER BY dmsgs DESC')
+        all_user = c.fetchall()
+        c.execute('SELECT dmsgs FROM dmsgCount ORDER BY dmsgs DESC')
+        all_msgs = c.fetchall()
+
+        if len(all_user) < 10:
+            listrange = len(all_user)
+        else:
+            listrange = 10
+
+        the_list = ''
+        for x in range(listrange):
+            user = sqlTOstr(all_user[x])
+            msgs = sqlTOstr(all_msgs[x])
+            try:
+                guildobject = bot.get_guild(guildid)
+                userobject = await guildobject.fetch_member(user)
+                the_list += f'{str(x + 1)}. {userobject.mention} - **{msgs} messages **\n'
+            except:
+                pass
+        return the_list
+    except:
+        return None
+
+async def vcleaderboard(bot, guildid):
+    conn, c = connect(guildid)
+    try:
+        c.execute('SELECT userid FROM vcTime ORDER BY vc DESC')
+        all_user = c.fetchall()
+        c.execute('SELECT vc FROM vcTime ORDER BY vc DESC')
+        all_vc = c.fetchall()
+
+        if len(all_user) < 10:
+            listrange = len(all_user)
+        else:
+            listrange = 10
+
+        the_vclist = ''
+        for x in range(listrange):
+            user = sqlTOstr(all_user[x])
+            vc = sqlTOstr(all_vc[x])
+            vc = int(vc)
+            vchours = 0
+
+            while vc > 60:
+                vchours += 1
+                vc -= 60
+
+            try:
+                guildobject = bot.get_guild(guildid)
+                userobject = await guildobject.fetch_member(user)
+                the_vclist += f'{str(x + 1)}. {userobject.mention} - **{vchours} hours and {vc} minutes **\n'
+            except:
+                pass
+
+        return the_vclist
+    except:
+        return None
+
+async def tvcleaderboard(bot, guildid):
+    conn, c = connect(guildid)
+    try:
+        c.execute('SELECT userid FROM totalvcTime ORDER BY tvc DESC')
+        all_user = c.fetchall()
+        c.execute('SELECT tvc FROM totalvcTime ORDER BY tvc DESC')
+        all_vc = c.fetchall()
+
+        if len(all_user) < 10:
+            listrange = len(all_user)
+        else:
+            listrange = 10
+
+        the_vclist = ''
+        for x in range(listrange):
+            user = sqlTOstr(all_user[x])
+            vc = sqlTOstr(all_vc[x])
+            vc = int(vc)
+            vchours = 0
+
+            while vc > 60:
+                vchours += 1
+                vc -= 60
+
+            try:
+                guildobject = bot.get_guild(guildid)
+                userobject = await guildobject.fetch_member(user)
+                the_vclist += f'{str(x + 1)}. {userobject.mention} - **{vchours} hours and {vc} minutes **\n'
             except:
                 pass
         return the_vclist
@@ -240,7 +454,7 @@ def balancegrab(userid, guildid):
     except:
         return None
 
-def balleaderboard(guildid):
+async def balleaderboard(bot, guildid):
     conn, c = connect(guildid)
     try:
         c.execute('SELECT userid FROM bank ORDER BY money DESC')
@@ -257,7 +471,9 @@ def balleaderboard(guildid):
             user = sqlTOstr(all_user[x])
             bals = sqlTOstr(all_bals[x])
             try:
-                the_list += f'{str(x + 1)}. <@{user}> - **${bals}**\n'
+                guildobject = bot.get_guild(guildid)
+                userobject = await guildobject.fetch_member(user)
+                the_list += f'{str(x + 1)}. {userobject.mention} - **${bals}**\n'
             except:
                 pass
         return the_list

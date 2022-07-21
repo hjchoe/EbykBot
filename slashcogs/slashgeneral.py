@@ -63,7 +63,7 @@ class sGeneralCog(slash_util.ApplicationCog):
             helpe.add_field(name='eb removemessages (eb rm)', value='remove total messages from a member, requires Admin Permission', inline=False)
 
         helpe.set_footer(text="Join Support Server: https://discord.gg/prcN3AtNcZ")
-        await ctx.channel.send(content=None, embed=helpe)
+        await ctx.send(content=None, embed=helpe)
 
     ##---------- INVITE -----------##
     @slash_util.slash_command(description="Provides invite link for bot.")

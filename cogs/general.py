@@ -99,8 +99,6 @@ class GeneralCog(commands.Cog):
             c.execute('CREATE TABLE IF NOT EXISTS timeLog(userid VARCHAR(255), jTime DATETIME)')
             c.execute('CREATE TABLE IF NOT EXISTS partnerCount(userid VARCHAR(255), partners INT)')
             c.execute('CREATE TABLE IF NOT EXISTS bank(userid VARCHAR(255), money INT)')
-            c.execute('CREATE TABLE IF NOT EXISTS deletedmsg(channelid VARCHAR(255), userid VARCHAR(255), content VARCHAR(255))')
-            c.execute('CREATE TABLE IF NOT EXISTS editedmsg(channelid VARCHAR(255), userid VARCHAR(255), before VARCHAR(255), after VARCHAR(255))')
             conn.commit()
         except:
             lib.sql.newdbfile(guild.id)
