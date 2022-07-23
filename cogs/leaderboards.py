@@ -78,7 +78,6 @@ class LeaderboardsCog(commands.Cog):
     @commands.command(aliases=['guildmsg', 'guildmessages'])
     async def gm(self, ctx):
         umsgcount, tmsgcount, dmsgcount = lib.sql.glb_messagecount(ctx.guild.id)
-
         embed = lib.embed.glb_messageEmbed(ctx, self.bot, umsgcount, tmsgcount, dmsgcount)
         await ctx.send(content=None, embed=embed)
 
@@ -111,7 +110,7 @@ class LeaderboardsCog(commands.Cog):
     @commands.command()
     async def gvc(self, ctx):
         hours, minutes, thours, tminutes = lib.sql.glb_vcount(ctx.guild.id)
-        embed = await lib.embed.glb_vcEmbed(ctx, self.bot, hours, minutes, thours, tminutes)
+        embed = lib.embed.glb_vcEmbed(ctx, self.bot, hours, minutes, thours, tminutes)
         await ctx.send(content=None, embed=embed)
 
     ##---------- Guild Vc Time Leaderboard ----------##
@@ -142,7 +141,7 @@ class LeaderboardsCog(commands.Cog):
                 embed = lib.embed.systemEmbed("**prefix:** eb ___\nSend `eb help` for my help menu!", self.bot)
                 await message.channel.send(content=None, embed=embed)
 
-            if message.guild is None and message.author is not self.bot.user and not 'eb help' in message.content.lower():
+            if message.guild is None and message.author is not self.bot.user and 'eb help' not in message.content.lower():
                 await message.author.send("Hey I'm Ebyk Bot, run the command **eb help** to check out what I offer!")
                 return
 
@@ -156,11 +155,11 @@ class LeaderboardsCog(commands.Cog):
             c.execute("SELECT dmsgs FROM dmsgCount WHERE userid = ?", (message.author.id,))
             dcount = c.fetchone()
 
-            gc.execute("SELECT msgs FROM guildmsgcount WHERE guildid = ?", (message.guild.id))
+            gc.execute("SELECT msgs FROM guildmsgcount WHERE guildid = ?", (message.guild.id,))
             gcount = gc.fetchone()
-            gc.execute("SELECT tmsgs FROM tguildmsgcount WHERE guildid = ?", (message.guild.id))
+            gc.execute("SELECT tmsgs FROM tguildmsgcount WHERE guildid = ?", (message.guild.id,))
             gtcount = gc.fetchone()
-            gc.execute("SELECT dmsgs FROM dguildmsgcount WHERE guildid = ?", (message.guild.id))
+            gc.execute("SELECT dmsgs FROM dguildmsgcount WHERE guildid = ?", (message.guild.id,))
             gdcount = gc.fetchone()
 
             if count is None:
@@ -209,7 +208,7 @@ class LeaderboardsCog(commands.Cog):
                 gconn.commit()
 
             if gdcount is None:
-                gc.execute('INSERT INTO dguildmsgcount (userid, dmsgs) VALUES (?,?)', (message.guild.id, 1))
+                gc.execute('INSERT INTO dguildmsgcount (guildid, dmsgs) VALUES (?,?)', (message.guild.id, 1))
                 gconn.commit()
             else:
                 doldNum = dcount[0]

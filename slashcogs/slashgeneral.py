@@ -52,6 +52,14 @@ class sGeneralCog(slash_util.ApplicationCog):
             helpe.add_field(name='eb vc', value='check how much time you spent in vc', inline=False)
             helpe.add_field(name='eb vcleaderboard (eb vclb)', value='check the weekly vc leaderboard', inline=False)
             helpe.add_field(name='eb tvcleaderboard (eb tvclb)', value='check the total vc leaderboard', inline=False)
+
+            helpe.add_field(name='eb guildmessages (eb gm, eb guildmsg)', value='check how many messages current server has sent', inline=False)
+            helpe.add_field(name='eb guildmleaderboard (eb gmlb)', value='check the weekly guild message leaderboard', inline=False)
+            helpe.add_field(name='eb guildtmleaderboard (eb gtmlb)', value='check the total guild message leaderboard', inline=False)
+            helpe.add_field(name='eb guilddmleaderboard (eb gdmlb)', value='check the daily guild message leaderboard', inline=False)
+            helpe.add_field(name='eb gvc', value='check how much time current server has spent in vc', inline=False)
+            helpe.add_field(name='eb guildvcleaderboard (eb gvclb)', value='check the weekly guild vc leaderboard', inline=False)
+            helpe.add_field(name='eb guildtvcleaderboard (eb gtvclb)', value='check the total guild vc leaderboard', inline=False)
         elif htype == "economy":
             helpe.add_field(name='eb balance (eb b, eb bal)', value='check your balance', inline=False)
             helpe.add_field(name='eb bleaderboard (eb blb)', value='check the server balance leaderboard', inline=False)
@@ -61,6 +69,7 @@ class sGeneralCog(slash_util.ApplicationCog):
             helpe.add_field(name='eb reset_total_mlb (eb rtmlb)', value='reset the total leaderboard for messages, requires Admin Permission', inline=False)
             helpe.add_field(name='eb reset_total_vclb (eb rtvclb)', value='reset the total leaderboard for voice, requires Admin Permission', inline=False)        
             helpe.add_field(name='eb removemessages (eb rm)', value='remove total messages from a member, requires Admin Permission', inline=False)
+            helpe.add_field(name='eb invitecode (eb ic)', value='set the invite code for your server, requires Admin Permission', inline=False)
 
         helpe.set_footer(text="Join Support Server: https://discord.gg/prcN3AtNcZ")
         await ctx.send(content=None, embed=helpe)

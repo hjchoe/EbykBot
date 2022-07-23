@@ -265,8 +265,8 @@ def glb_messagecount(guildid):
             dcount = 0
 
         msgcount = sqlTOstr(count)
-        tmsgcount = sqlTOstr(count)
-        dmsgcount = sqlTOstr(count)
+        tmsgcount = sqlTOstr(tcount)
+        dmsgcount = sqlTOstr(dcount)
         return msgcount, tmsgcount, dmsgcount
     except:
         return None
@@ -283,7 +283,7 @@ async def glb_messageleaderboard(bot):
             listrange = len(all_guild)
         else:
             listrange = 10
-            
+        
         the_list = ''
         for x in range(listrange):
             guild = sqlTOstr(all_guild[x])
@@ -291,9 +291,11 @@ async def glb_messageleaderboard(bot):
             c.execute("SELECT code FROM invitecode WHERE guildid = ?", (guild,))
             code = c.fetchone()
             invitecode = sqlTOstr(code)
+            if (invitecode != "None"):
+                invitecode = "https://discord.gg/" + invitecode
             try:
-                guildobject = bot.get_guild(guild)
-                the_list += f'{str(x + 1)}. {guildobject.name} - **{msgs} messages ** [ invite code: {invitecode} ]\n'
+                guildobject = bot.get_guild(int(guild))
+                the_list += f'{str(x + 1)}. {guildobject.name} - **{msgs} messages ** [ invite: {invitecode} ]\n'
             except:
                 pass
         return the_list
@@ -320,9 +322,11 @@ async def glb_tmessageleaderboard(bot):
             c.execute("SELECT code FROM invitecode WHERE guildid = ?", (guild,))
             code = c.fetchone()
             invitecode = sqlTOstr(code)
+            if (invitecode != "None"):
+                invitecode = "https://discord.gg/" + invitecode
             try:
-                guildobject = bot.get_guild(guild)
-                the_list += f'{str(x + 1)}. {guildobject.name} - **{msgs} messages ** [ invite code: {invitecode} ]\n'
+                guildobject = bot.get_guild(int(guild))
+                the_list += f'{str(x + 1)}. {guildobject.name} - **{msgs} messages ** [ invite: {invitecode} ]\n'
             except:
                 pass
         return the_list
@@ -349,9 +353,11 @@ async def glb_dmessageleaderboard(bot):
             c.execute("SELECT code FROM invitecode WHERE guildid = ?", (guild,))
             code = c.fetchone()
             invitecode = sqlTOstr(code)
+            if (invitecode != "None"):
+                invitecode = "https://discord.gg/" + invitecode
             try:
-                guildobject = bot.get_guild(guild)
-                the_list += f'{str(x + 1)}. {guildobject.name} - **{msgs} messages ** [ invite code: {invitecode} ]\n'
+                guildobject = bot.get_guild(int(guild))
+                the_list += f'{str(x + 1)}. {guildobject.name} - **{msgs} messages ** [ invite: {invitecode} ]\n'
             except:
                 pass
         return the_list
@@ -383,7 +389,7 @@ async def glb_vcleaderboard(bot):
                 vc -= 60
 
             try:
-                guildobject = bot.get_guild(guild)
+                guildobject = bot.get_guild(int(guild))
                 the_vclist += f'{str(x + 1)}. {guildobject.name} - **{vchours} hours and {vc} minutes **\n'
             except:
                 pass
@@ -394,43 +400,40 @@ async def glb_vcleaderboard(bot):
 
 async def glb_tvcleaderboard(bot):
     conn, c = glb_connect()
-    try:
-        c.execute('SELECT guildid FROM tguildvctime ORDER BY tvc DESC')
-        all_guild = c.fetchall()
-        c.execute('SELECT tvc FROM guildvctime ORDER BY tvc DESC')
-        all_vc = c.fetchall()
+    c.execute('SELECT guildid FROM tguildvctime ORDER BY tvc DESC')
+    all_guild = c.fetchall()
+    c.execute('SELECT tvc FROM tguildvctime ORDER BY tvc DESC')
+    all_vc = c.fetchall()
 
-        if len(all_guild) < 10:
-            listrange = len(all_guild)
-        else:
-            listrange = 10
+    if len(all_guild) < 10:
+        listrange = len(all_guild)
+    else:
+        listrange = 10
 
-        the_vclist = ''
-        for x in range(listrange):
-            guild = sqlTOstr(all_guild[x])
-            vc = sqlTOstr(all_vc[x])
-            vc = int(vc)
-            vchours = 0
+    the_vclist = ''
+    for x in range(listrange):
+        guild = sqlTOstr(all_guild[x])
+        vc = sqlTOstr(all_vc[x])
+        vc = int(vc)
+        vchours = 0
 
-            while vc > 60:
-                vchours += 1
-                vc -= 60
+        while vc > 60:
+            vchours += 1
+            vc -= 60
 
-            try:
-                guildobject = bot.get_guild(guild)
-                the_vclist += f'{str(x + 1)}. {guildobject.name} - **{vchours} hours and {vc} minutes **\n'
-            except:
-                pass
-        return the_vclist
-    except:
-        return None
+        try:
+            guildobject = bot.get_guild(int(guild))
+            the_vclist += f'{str(x + 1)}. {guildobject.name} - **{vchours} hours and {vc} minutes **\n'
+        except:
+            pass
+    return the_vclist
     
 def glb_vcount(guildid):
     conn, c = glb_connect()
     try:
-        c.execute("SELECT vc FROM guildvctime WHERE userid = ?", (guildid,))
+        c.execute("SELECT vc FROM guildvctime WHERE guildid = ?", (guildid,))
         vcount = c.fetchone()
-        c.execute("SELECT tvc from tguildvctime WHERE userid = ?", (guildid,))
+        c.execute("SELECT tvc from tguildvctime WHERE guildid = ?", (guildid,))
         tvcount = c.fetchone()
 
         if vcount is None:
@@ -456,40 +459,82 @@ def glb_vcount(guildid):
     except:
         return None
 
+def balancegrab(userid, guildid):
+    conn, c = connect(guildid)
+    try:
+        c.execute("SELECT money FROM bank WHERE userid = ?", (userid,))
+        count = c.fetchone()
+
+        if count is None:
+            count = 0
+
+        money = sqlTOstr(count)
+        return money
+    except:
+        return None
+
+async def balleaderboard(bot, guildid):
+    conn, c = connect(guildid)
+    try:
+        c.execute('SELECT userid FROM bank ORDER BY money DESC')
+        all_user = c.fetchall()
+        c.execute('SELECT money FROM bank ORDER BY money DESC')
+        all_bals = c.fetchall()
+
+        if len(all_user) < 10:
+            listrange = len(all_user)
+        else:
+            listrange = 10
+        the_list = ''
+        for x in range(listrange):
+            user = sqlTOstr(all_user[x])
+            bals = sqlTOstr(all_bals[x])
+            try:
+                guildobject = bot.get_guild(guildid)
+                userobject = await guildobject.fetch_member(user)
+                the_list += f'{str(x + 1)}. {userobject.mention} - **${bals}**\n'
+            except:
+                pass
+        return the_list
+    except:
+        return None
+
 def resetlb():
     for filename in os.listdir(dbdir):
-        conn = sqlite3.connect(f"{dbdir}{filename}")
-        c = conn.cursor()
-        try:
-            c.execute('UPDATE msgCount SET msgs = 0 WHERE msgs < 999999')
-            c.execute('UPDATE vcTime SET vc = 0 WHERE vc < 999999')
-            conn.commit()
-            print(f"Leaderboard Reset Succeeded for {filename}")
-        except:
-            print(f"Leaderboard Reset Failed for {filename}")
-    conn, c = glb_connect()
+        if filename != f"guildmessages.db":
+            conn = sqlite3.connect(f"{dbdir}{filename}")
+            c = conn.cursor()
+            try:
+                c.execute('UPDATE msgCount SET msgs = 0 WHERE msgs < 999999')
+                c.execute('UPDATE vcTime SET vc = 0 WHERE vc < 999999')
+                conn.commit()
+                print(f"Leaderboard Reset Succeeded for {filename}")
+            except:
+                print(f"Leaderboard Reset Failed for {filename}")
+    gconn, gc = glb_connect()
     try:
-        c.execute('UPDATE guildmsgcount SET msgs = 0 WHERE msgs < 999999')
-        c.execute('UPDATE guildvctime SET vc = 0 WHERE vc < 999999')
-        conn.commit()
+        gc.execute('UPDATE guildmsgcount SET msgs = 0 WHERE msgs < 999999')
+        gc.execute('UPDATE guildvctime SET vc = 0 WHERE vc < 999999')
+        gconn.commit()
         print(f"Leaderboard Reset Succeeded for guild leaderboards")
     except:
         print(f"Leaderboard Reset Failed for guild leaderboards")
 
 def resetdlb():
     for filename in os.listdir(dbdir):
-        conn = sqlite3.connect(f"{dbdir}{filename}")
-        c = conn.cursor()
-        try:
-            c.execute('UPDATE dmsgCount SET dmsgs = 0 WHERE dmsgs < 999999')
-            conn.commit()
-            print(f"Leaderboard Reset Succeeded for {filename}")
-        except:
-            print(f"Leaderboard Reset Failed for {filename}")
-    conn, c = glb_connect()
+        if filename != f"guildmessages.db":
+            conn = sqlite3.connect(f"{dbdir}{filename}")
+            c = conn.cursor()
+            try:
+                c.execute('UPDATE dmsgCount SET dmsgs = 0 WHERE dmsgs < 999999')
+                conn.commit()
+                print(f"Leaderboard Reset Succeeded for {filename}")
+            except:
+                print(f"Leaderboard Reset Failed for {filename}")
+    gconn, gc = glb_connect()
     try:
-        c.execute('UPDATE dguildmsgcount SET dmsgs = 0 WHERE dmsgs < 999999')
-        conn.commit()
+        gc.execute('UPDATE dguildmsgcount SET dmsgs = 0 WHERE dmsgs < 999999')
+        gconn.commit()
         print(f"Leaderboard Reset Succeeded for guild leaderboards")
     except:
         print(f"Leaderboard Reset Failed for guild leaderboards")
@@ -518,14 +563,15 @@ def resettvclb(guildid):
 
 def cleanTimeLog():
     for filename in os.listdir(dbdir):
-        conn = sqlite3.connect(f"{dbdir}{filename}")
-        c = conn.cursor()
-        try:
-            c.execute('DELETE FROM timeLog')
-            conn.commit()
-            print(f"Time Log Reset Succeeded for {filename}")
-        except:
-            print(f"Time Log Reset Failed for {filename}")
+        if filename != f"guildmessages.db":
+            conn = sqlite3.connect(f"{dbdir}{filename}")
+            c = conn.cursor()
+            try:
+                c.execute('DELETE FROM timeLog')
+                conn.commit()
+                print(f"Time Log Reset Succeeded for {filename}")
+            except:
+                print(f"Time Log Reset Failed for {filename}")
 
 def newdbfile(guildid):
     filename = f"{dbdir}({guildid}) sql.db"

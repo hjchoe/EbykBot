@@ -48,8 +48,9 @@ def lbEmbed(ctx, title, lb):
     return embed
 
 def glb_lbEmbed(ctx, title, lb):
-    embed = discord.Embed(title='', description=lb, color=13276925)
+    embed = discord.Embed(title='', description=lb, color=16765404)
     embed.set_author(name=f"""{title} Guild Leaderboard""", icon_url=ctx.guild.icon.url)
+    embed.set_footer(text="SERVER ADMINS: run the invitecode command to add an invite code to your server.")
     return embed
 
 async def balEmbed(ctx, userid, amt):

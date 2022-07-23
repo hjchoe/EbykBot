@@ -66,5 +66,36 @@ class AdminCog(commands.Cog):
             embed = lib.embed.errorEmbed(ctx, "Proper usage is: eb removemessages @user numberofmessages", "Incorrect Syntax")
             await ctx.send(content=None, embed=embed)
 
+    ##---------- Set Invite Code -----------##
+    @commands.guild_only()
+    @commands.has_permissions(administrator=True)
+    @commands.command(aliases=['ic'])
+    async def invitecode(self, ctx, code):
+        conn, c = lib.sql.glb_connect()
+
+        c.execute("SELECT code from invitecode WHERE guildid = ?", (ctx.guild.id,))
+        invcode = c.fetchone()
+
+        code = code.replace("https://discord.gg/",'')
+
+        if invcode is None:
+            c.execute('INSERT INTO invitecode (guildid, code) VALUES (?,?)', (ctx.guild.id, code))
+            conn.commit()
+        else:
+            c.execute('UPDATE invitecode SET code = ? WHERE guildid = ?', (code, ctx.guild.id))
+            conn.commit()
+
+        embed = lib.embed.systemEmbed(f"Set {ctx.guild.name}'s invite to: https://discord.gg/{code}.", self.bot)
+        await ctx.send(content=None, embed=embed)
+
+    @invitecode.error
+    async def invitecode_error(self, ctx, error):
+        if isinstance(error, commands.CheckFailure):
+            embed = lib.embed.errorEmbed(ctx, "Failed to set invite code.", "Missing Admin Permissions")
+            await ctx.send(content=None, embed=embed)
+        if isinstance(error, commands.MissingRequiredArgument):
+            embed = lib.embed.errorEmbed(ctx, "Proper usage is: eb invitecode code", "Incorrect Syntax")
+            await ctx.send(content=None, embed=embed)
+
 def setup(bot):
     bot.add_cog(AdminCog(bot))

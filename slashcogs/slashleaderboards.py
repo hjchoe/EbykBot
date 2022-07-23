@@ -69,7 +69,7 @@ class sLeaderboardsCog(slash_util.ApplicationCog):
     async def guildmessages(self, ctx):
         umsgcount, tmsgcount, dmsgcount = lib.sql.glb_messagecount(ctx.guild.id)
 
-        embed = await lib.embed.glb_messageEmbed(ctx, self.bot, umsgcount, tmsgcount, dmsgcount)
+        embed = lib.embed.glb_messageEmbed(ctx, self.bot, umsgcount, tmsgcount, dmsgcount)
         await ctx.send(content=None, embed=embed)
 
     ##---------- Guild Message Leaderboard ----------##
@@ -97,7 +97,7 @@ class sLeaderboardsCog(slash_util.ApplicationCog):
     @slash_util.slash_command(description="Shows the vc time of a guild.")
     async def guildvctime(self, ctx):
         hours, minutes, thours, tminutes = lib.sql.glb_vcount(ctx.guild.id)
-        embed = await lib.embed.glb_vcEmbed(ctx, self.bot, hours, minutes, thours, tminutes)
+        embed = lib.embed.glb_vcEmbed(ctx, self.bot, hours, minutes, thours, tminutes)
         await ctx.send(content=None, embed=embed)
 
     ##---------- Guild Vc Time Leaderboard ----------##

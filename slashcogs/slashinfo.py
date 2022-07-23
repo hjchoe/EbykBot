@@ -50,7 +50,8 @@ class sInfoCog(slash_util.ApplicationCog):
         except:
             pass
 
-        whois.add_field(name='Owner', value=f"{guild.owner.mention} [{guild.owner_id}]", inline=False)
+        member = await guild.fetch_member(guild.owner_id)
+        whois.add_field(name='Owner', value=f"{member.mention} [{guild.owner_id}]", inline=False)
         whois.add_field(name='Id', value=guild.id, inline=False)
         whois.add_field(name='Created On', value=guild.created_at.strftime("%b %d %Y [*%H:%M:%S*]"), inline=False)
 

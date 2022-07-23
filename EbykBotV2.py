@@ -45,15 +45,15 @@ def read_token():
 @commands.is_owner()
 @bot.command()
 async def updatemsg(ctx):
-    guilds = len(bot.guilds)
-    embed = lib.embed.systemEmbed(f"""~ **EbykBot V2.0 UPDATE ANNOUNCEMENT** ~\n\nThank you for using Ebyk Bot!\nI'm happy to say we have reached **~89 servers** and **~300,000 users**!\nI couldn't have done it without you guys\n\nEbykBot V2.0 has been released with changes according to discord's new API\n**PLEASE** feel free to add me at ebyk#1660 and message me with bugs or suggestions\n""", bot)
-    embed.add_field(name="Change Log", value=f"""\n- reorganization of bot infrastructure using libraries and cogs\n- removal of snipe and esnipe commands due to message intent changes from discord\n- implementation of slash commands\n\n*Join the support server at: https://discord.gg/prcN3AtNcZ*""", inline=False)
+    embed = lib.embed.systemEmbed(f"""~ **EbykBot V3.0 UPDATE ANNOUNCEMENT** ~\n\nThank you for using Ebyk Bot!\nWe've grown to **~142 servers** and **~800,000+ users**!\nEbyk Bot was also officially **verified** by Discord\nThis could not have been done without your continued support\n\nEbykBot V3.0 has been released with new features and changes according to discord's new API\n**PLEASE** feel free to add me at ebyk#1660 and message me with bugs or suggestions\n""", bot)
+    embed.add_field(name="Change Log", value=f"""\n- addition of discord wide guild message and vc time leaderboards where servers are ranked based on their total messages sent and time spent in vc\n(server owners have the option to set an invite code to show up on the leaderboard as well)\nrun `eb h general` to check out new commands\n- bug fixes\n\n*Join the support server at: https://discord.gg/prcN3AtNcZ*""", inline=False)
     embed2 = lib.embed.systemEmbed(f"""~ **IMPORTANT** ~\n\nIn order to access **slash commands**, you need to re-invite the bot using this new invite link:\nhttps://discord.com/api/oauth2/authorize?client_id=800171925275017237&permissions=277025508416&scope=bot%20applications.commands\n""", bot)
     failed = []
     
     for server in bot.guilds:
+        print(server.owner_id)
         try:
-            member = discord.utils.get(server.members, id=server.owner_id)
+            member = await server.fetch_member(server.owner_id)
             await member.send(content=None, embed=embed)
             await member.send(content=None, embed=embed2)
             print(f"message sent [{server.name}]")
@@ -61,14 +61,13 @@ async def updatemsg(ctx):
         except:
             print(f"message FAILED [{server.name}]")
             failed.append(server)
-            pass
     
 
     print(f"\n\nSECOND ATTEMPT\n\n")
     time.sleep(30)
     for server in failed:
         try:
-            member = discord.utils.get(server.members, id=server.owner_id)
+            member = await server.fetch_member(server.owner_id)
             await member.send(content=None, embed=embed)
             await member.send(content=None, embed=embed2)
             print(f"message sent [{server.name}]")
@@ -76,7 +75,6 @@ async def updatemsg(ctx):
             time.sleep(10)
         except:
             print(f"message FAILED [{server.name}]")
-            pass
     
     print(f"\n\nTHIRD ATTEMPT\n\n")
     time.sleep(30)
@@ -85,6 +83,7 @@ async def updatemsg(ctx):
         for tc in server.text_channels:
             state = False
             try:
+                member = await server.fetch_member(server.owner_id)
                 await tc.send(content=f"{member.mention}")
                 state = True
                 tchannel = tc
@@ -93,7 +92,7 @@ async def updatemsg(ctx):
             if state == True:
                 break
         try:
-            member = discord.utils.get(server.members, id=server.owner_id)
+            member = await server.fetch_member(server.owner_id)
             await tchannel.send(content="", embed=embed)
             await tchannel.send(content=None, embed=embed2)
             print(f"message sent [{server.name}] in ({tc.name})")
@@ -101,7 +100,6 @@ async def updatemsg(ctx):
             time.sleep(10)
         except:
             print(f"message FAILED [{server.name}] in ({tc.name})")
-            pass
 
     print(f"done with {len(failed)} fails")
 
@@ -109,21 +107,17 @@ async def updatemsg(ctx):
 @commands.is_owner()
 @bot.command()
 async def updatemsgtest(ctx):
-    guilds = len(bot.guilds)
-    embed = lib.embed.systemEmbed(f"""~ **EbykBot V2.0 UPDATE ANNOUNCEMENT** ~\n\nThank you for using Ebyk Bot!\nI'm happy to say we have reached **~89 servers** and **~300,000 users**!\nI couldn't have done it without you guys\n\nEbykBot V2.0 has been released with changes according to discord's new API\n**PLEASE** feel free to add me at ebyk#1660 and message me with bugs or suggestions\n""", bot)
-    embed.add_field(name="Change Log", value=f"""\n- reorganization of bot infrastructure using libraries and cogs\n- removal of snipe and esnipe commands due to message intent changes from discord\n- implementation of slash commands\n\n*Join the support server at: https://discord.gg/prcN3AtNcZ*""", inline=False)
+    embed = lib.embed.systemEmbed(f"""~ **EbykBot V3.0 UPDATE ANNOUNCEMENT** ~\n\nThank you for using Ebyk Bot!\nWe've grown to **~142 servers** and **~800,000+ users**!\nEbyk Bot was also officially **verified** by Discord\nThis could not have been done without your continued support\n\nEbykBot V3.0 has been released with new features and changes according to discord's new API\n**PLEASE** feel free to add me at ebyk#1660 and message me with bugs or suggestions\n""", bot)
+    embed.add_field(name="Change Log", value=f"""\n- addition of discord wide guild message and vc time leaderboards where servers are ranked based on their total messages sent and time spent in vc\n(server owners have the option to set an invite code to show up on the leaderboard as well)\nrun `eb h general` to check out new commands\n- bug fixes\n\n*Join the support server at: https://discord.gg/prcN3AtNcZ*""", inline=False)
     embed2 = lib.embed.systemEmbed(f"""~ **IMPORTANT** ~\n\nIn order to access **slash commands**, you need to re-invite the bot using this new invite link:\nhttps://discord.com/api/oauth2/authorize?client_id=800171925275017237&permissions=277025508416&scope=bot%20applications.commands\n""", bot)
     await ctx.send(content=None, embed=embed)
     await ctx.send(content=None, embed=embed2)
-    number = 0
-
 
 @tasks.loop(hours=1.0)
 async def updatestats():
     await bot.wait_until_ready()
     await cogs.general.updatestatus(bot)
 
-    
 @tasks.loop(hours=12.0)
 async def checkday():
     await bot.wait_until_ready()

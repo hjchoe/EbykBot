@@ -52,5 +52,26 @@ class sAdminCog(slash_util.ApplicationCog):
             embed = lib.embed.errorEmbed(ctx, f"Failed to remove {messages} messages from {user.mention}", "Missing Admin Permissions")
             await ctx.send(content=None, embed=embed)
 
+    ##---------- Set Invite Code -----------##
+    @slash_util.slash_command(description="[ADMIN] Set the invite code for your server to show up in guild leaderboards.")
+    @slash_util.describe(code="The invite code you want to set for your server.")
+    async def invitecode(self, ctx, code: str):
+        conn, c = lib.sql.glb_connect()
+
+        c.execute("SELECT code from invitecode WHERE guildid = ?", (ctx.guild.id,))
+        invcode = c.fetchone()
+
+        code = code.replace("https://discord.gg/",'')
+
+        if invcode is None:
+            c.execute('INSERT INTO invitecode (guildid, code) VALUES (?,?)', (ctx.guild.id, code))
+            conn.commit()
+        else:
+            c.execute('UPDATE invitecode SET code = ? WHERE guildid = ?', (code, ctx.guild.id))
+            conn.commit()
+
+        embed = lib.embed.systemEmbed(f"Set {ctx.guild.name}'s invite to: https://discord.gg/{code}.", self.bot)
+        await ctx.send(content=None, embed=embed)
+
 def setup(bot):
     bot.add_cog(sAdminCog(bot))
