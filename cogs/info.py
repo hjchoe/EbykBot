@@ -81,7 +81,8 @@ class InfoCog(commands.Cog):
             members.append(f'<@{member.id}>')
             members = [str(members).replace('[','').replace(']','').replace("'",'').replace("'",'')]
         members = str(members).replace('[','').replace(']','').replace("'",'').replace("'",'')
-        nitro = discord.Embed(title='', description=f"""**Tier:** level {ctx.author.guild.premium_tier} \n**Boosts:** {ctx.author.guild.premium_subscription_count} \n**Boosters:** {members}""", color=16580705)
+        # nitro = discord.Embed(title='', description=f"""**Tier:** level {ctx.author.guild.premium_tier} \n**Boosts:** {ctx.author.guild.premium_subscription_count} \n**Boosters:** {members}""", color=16580705)
+        nitro = discord.Embed(title='', description=f"""**Tier:** level {ctx.author.guild.premium_tier} \n**Boosts:** {ctx.author.guild.premium_subscription_count}""", color=16580705)
 
         nitro.set_author(name=f"{ctx.guild.name}'s Nitro Boost Status", icon_url=ctx.guild.icon.url)
         nitro.set_thumbnail(url='https://cdn.discordapp.com/emojis/689542582987915438.gif?v=1')

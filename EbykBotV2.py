@@ -130,6 +130,7 @@ async def checkday():
     day = datetime.datetime.today().strftime('%A')
     if day == "Sunday":
         lib.sql.resetlb()
+        lib.sql.cleanTimeLog()
 
 @tasks.loop(hours=24.0)
 async def resetdailylb():
@@ -142,4 +143,5 @@ resetdailylb.start()
         
 if __name__ == '__main__':
     token = read_token()
+    lib.sql.cleanTimeLog()
     bot.run(token)
