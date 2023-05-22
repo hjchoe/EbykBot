@@ -2,10 +2,10 @@ import os
 import sqlite3
 
 #dbdir = "/home/ebyk/EbykBot/ebykdb/"
-dbdir = "/home/ebyk/EbykBot/ebykdbtest/"
+#dbdir = "/home/ebyk/EbykBot/ebykdbtest/"
 
 #dbdir = "/Users/personal/Documents/GitHub/EbykBot/ebykdb/"
-#dbdir = "/Users/hjcho/OneDrive/Documents/GitHub/EbykBot/ebykdb"
+dbdir = "/Users/hjcho/Documents/GitHub/EbykBot/ebykdb"
 
 ##---------- SQL CONNECT -----------##
 def connect(guildid):
