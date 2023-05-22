@@ -21,7 +21,7 @@ slashextensions = ['slashcogs.slashgeneral', 'slashcogs.slashleaderboards', 'sla
 
 class MyBot(commands.Bot):
     async def setup_hook(self):
-        super().__init__(command_prefix="eb ", case_insensitive=True, owner_id=329326685185114115, help_command=None, intents=intents)
+        super().setup_hook(command_prefix="eb ", case_insensitive=True, owner_id=329326685185114115, help_command=None, intents=intents)
 
         for ext in extensions:
             await self.load_extension(ext)
