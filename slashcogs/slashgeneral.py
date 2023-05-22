@@ -2,13 +2,13 @@ import discord
 import lib.slash_util as slash_util
 import lib.embed
 
-class sGeneralCog(slash_util.ApplicationCog):
+class sGeneralCog(commands.Cog):
     ##---------- TEST -----------##
-    @slash_util.slash_command(description="Test command with latency.")
-    async def test(self, ctx):
+    @app_commands.command(name="test", description="Test command with bot latency.")
+    async def test(self, interaction: discord.Interaction):
         latency = round(self.bot.latency * 1000)
         embed = lib.embed.systemEmbed(f"""responding!\n\n**Ping: **{latency}ms""", self.bot)
-        await ctx.send(content=None, embed=embed)
+        await interaction.response.send_message(content=None, embed=embed)
 
     ##---------- AVATAR -----------##
     @slash_util.slash_command(description="Shows the avatar of the user.")
