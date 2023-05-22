@@ -37,8 +37,11 @@ bot = MyBot("eb ")
 
 ##-------------------------------------------------- DEFINITIONS ---------------------------------------------------##
 
+tokenpath = "ebykbottoken.txt"
+testtokenpath = "ebyktest.txt"
+
 def read_token():
-    with open("ebykbottoken.txt", "r") as f:
+    with open(testtokenpath, "r") as f:
         lines = f.readlines()
         return lines[0].strip()
 
@@ -137,9 +140,8 @@ checkday.start()
 resetdailylb.start()
        
 async def main():
-    async with bot:
-        token = read_token()
-        lib.sql.cleanTimeLog()
-        await bot.start(token)
+    token = read_token()
+    lib.sql.cleanTimeLog()
+    await bot.start(token)
 
 asyncio.run(main())
