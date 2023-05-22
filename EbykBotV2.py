@@ -137,4 +137,4 @@ resetdailylb.start()
 if __name__ == '__main__':
     token = read_token()
     lib.sql.cleanTimeLog()
-    bot.run(token)
+    bot.start(token)
