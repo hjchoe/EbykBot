@@ -9,8 +9,10 @@ import lib.economy
 import lib.sql
 import cogs.general
 
+import asyncio
 import time
 import datetime
+
 intents = discord.Intents.default()
 intents.messages = False
 intents.members = False
