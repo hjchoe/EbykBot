@@ -20,7 +20,7 @@ extensions = ['cogs.general', 'cogs.leaderboards', 'cogs.info', 'cogs.econ', 'co
 slashextensions = ['slashcogs.slashgeneral', 'slashcogs.slashleaderboards', 'slashcogs.slashinfo', 'slashcogs.slashecon', 'slashcogs.slashadmin']
 
 class MyBot(commands.Bot):
-    async def __init__(self):
+    async def setup_hook(self):
         super().__init__(command_prefix="eb ", case_insensitive=True, owner_id=329326685185114115, help_command=None, intents=intents)
 
         for ext in extensions:
