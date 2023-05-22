@@ -4,7 +4,6 @@ import discord
 from discord.ext import tasks
 from discord.ext import commands
 
-import lib.slash_util as slash_util
 import lib.embed
 import lib.economy
 import lib.sql
@@ -20,16 +19,16 @@ intents.presences = False
 extensions = ['cogs.general', 'cogs.leaderboards', 'cogs.info', 'cogs.econ', 'cogs.admin']
 slashextensions = ['slashcogs.slashgeneral', 'slashcogs.slashleaderboards', 'slashcogs.slashinfo', 'slashcogs.slashecon', 'slashcogs.slashadmin']
 
-class MyBot(slash_util.Bot):
-    def __init__(self):
+class MyBot(commands.Bot):
+    async def __init__(self):
         super().__init__(command_prefix="eb ", case_insensitive=True, owner_id=329326685185114115, help_command=None, intents=intents)
 
         for ext in extensions:
-            self.load_extension(ext)
+            await self.load_extension(ext)
             print(f"loaded cog: {ext}")
 
         for sext in slashextensions:
-            self.load_extension(sext)
+            await self.load_extension(sext)
             print(f"loaded cog: {sext}")
 
 bot = MyBot()
