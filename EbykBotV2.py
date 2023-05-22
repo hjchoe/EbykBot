@@ -13,7 +13,7 @@ import cogs.general
 import time
 import datetime
 intents = discord.Intents.default()
-intents.messages = True
+intents.messages = False
 intents.members = False
 intents.presences = False
 
