@@ -1,5 +1,6 @@
 import discord
-import lib.slash_util as slash_util
+from discord import app_commands
+from discord.ext import commands
 import lib.embed
 
 class sGeneralCog(commands.Cog):
