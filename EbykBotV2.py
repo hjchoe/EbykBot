@@ -133,8 +133,11 @@ async def resetdailylb():
 updatestats.start()
 checkday.start()
 resetdailylb.start()
-        
-if __name__ == '__main__':
-    token = read_token()
-    lib.sql.cleanTimeLog()
-    await bot.start(token)
+       
+async def main():
+    async with bot:
+        token = read_token()
+        lib.sql.cleanTimeLog()
+        await bot.start(token)
+
+asyncio.run(main())
