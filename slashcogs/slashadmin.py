@@ -1,26 +1,26 @@
 import discord
+from discord import app_commands
 from discord.ext import commands
-import lib.slash_util as slash_util
 import lib.embed
 import lib.sql
 import lib.economy
 
-class sAdminCog(slash_util.ApplicationCog):
+class sAdminCog(commands.Cog):
     ##---------- Admin Total Message LB Reset -----------##
-    @slash_util.slash_command(description="[ADMIN] Reset total message leaderboard.")
-    async def reset_total_mlb(self, ctx):
-        if (ctx.author.guild_permissions.administrator):
-            lib.sql.resettmlb(ctx.guild.id)
+    @app_commands.command(name="reset total message leaderboard", description="[ADMIN] Reset total message leaderboard.")
+    async def reset_total_mlb(self, interaction: discord.Interaction):
+        if (interaction.permissions.administrator):
+            lib.sql.resettmlb(interaction.guild_id)
             embed = lib.embed.systemEmbed("Finished manual reset of total message leaderboard", self.bot)
-            await ctx.send(content=None, embed=embed)
+            await interaction.response.send_message(content=None, embed=embed)
         else:
-            embed = lib.embed.errorEmbed(ctx, "Failed to reset total message leaderboard", "Missing Admin Permissions")
-            await ctx.send(content=None, embed=embed)
+            embed = lib.embed.errorEmbed(interaction, "Failed to reset total message leaderboard", "Missing Admin Permissions")
+            await interaction.response.send_message(content=None, embed=embed)
 
     ##---------- Admin Total Voice LB Reset -----------##
     @slash_util.slash_command(description="[ADMIN] Reset total voice leaderboard.")
     async def reset_total_vclb(self, ctx):
-        if (ctx.author.guild_permissions.administrator):
+        if (interaction.permissions.administrator):
             lib.sql.resettvclb(ctx.guild.id)
             embed = lib.embed.systemEmbed("Finished manual reset of total voice leaderboard", self.bot)
             await ctx.send(content=None, embed=embed)
@@ -33,7 +33,7 @@ class sAdminCog(slash_util.ApplicationCog):
     @slash_util.describe(user="The user you want to remove messages from.")
     @slash_util.describe(messages="The number of messages to remove.")
     async def removemessages(self, ctx, user: discord.Member, messages: int):
-        if (ctx.author.guild_permissions.administrator):
+        if (interaction.permissions.administrator):
             conn, c = lib.sql.connect(ctx.guild.id)
             c.execute("SELECT tmsgs from totalmsgCount WHERE userid = ?", (user.id,))
             tcount = c.fetchone()
