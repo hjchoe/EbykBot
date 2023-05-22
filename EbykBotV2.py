@@ -31,7 +31,7 @@ class MyBot(commands.Bot):
             await self.load_extension(sext)
             print(f"loaded cog: {sext}")
 
-bot = MyBot()
+bot = MyBot("eb ")
 
 ##-------------------------------------------------- DEFINITIONS ---------------------------------------------------##
 
