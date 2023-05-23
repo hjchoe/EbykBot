@@ -22,18 +22,17 @@ extensions = ['cogs.general', 'cogs.leaderboards', 'cogs.info', 'cogs.econ', 'co
 slashextensions = ['slashcogs.slashgeneral', 'slashcogs.slashleaderboards', 'slashcogs.slashinfo', 'slashcogs.slashecon', 'slashcogs.slashadmin']
 
 class MyBot(commands.Bot):
-    async def setup_hook(self):
+    def __init__(self):
         super().__init__(command_prefix="eb ", case_insensitive=True, owner_id=329326685185114115, help_command=None, intents=intents)
+        #self.setup_hook(self)
 
-        for ext in extensions:
-            await self.load_extension(ext)
-            print(f"loaded cog: {ext}")
+    async def on_connect(self):
+        print("Connected!")
 
-        for sext in slashextensions:
-            await self.load_extension(sext)
-            print(f"loaded cog: {sext}")
+    async def on_ready(self):
+        print("Logged on as {0}!".format(self.user))
 
-bot = MyBot("eb ")
+bot = MyBot()
 
 ##-------------------------------------------------- DEFINITIONS ---------------------------------------------------##
 
@@ -45,13 +44,13 @@ def read_token():
         lines = f.readlines()
         return lines[0].strip()
 
-##---------- Update Message -----------##
+""" ##---------- Update Message -----------##
 @commands.is_owner()
 @bot.command()
 async def updatemsg(ctx):
-    embed = lib.embed.systemEmbed(f"""~ **EbykBot V3.0 UPDATE ANNOUNCEMENT** ~\n\nThank you for using Ebyk Bot!\nWe've grown to **~142 servers** and **~800,000+ users**!\nEbyk Bot was also officially **verified** by Discord\nThis could not have been done without your continued support\n\nEbykBot V3.0 has been released with new features and changes according to discord's new API\n**PLEASE** feel free to add me at ebyk#1660 and message me with bugs or suggestions\n""", bot)
-    embed.add_field(name="Change Log", value=f"""\n- addition of discord wide guild message and vc time leaderboards where servers are ranked based on their total messages sent and time spent in vc\n(server owners have the option to set an invite code to show up on the leaderboard as well)\nrun `eb h general` to check out new commands\n- bug fixes\n\n*Join the support server at: https://discord.gg/prcN3AtNcZ*""", inline=False)
-    embed2 = lib.embed.systemEmbed(f"""~ **IMPORTANT** ~\n\nIn order to access **slash commands**, you need to re-invite the bot using this new invite link:\nhttps://discord.com/api/oauth2/authorize?client_id=800171925275017237&permissions=277025508416&scope=bot%20applications.commands\n""", bot)
+    embed = lib.embed.systemEmbed(f"~ **EbykBot V3.0 UPDATE ANNOUNCEMENT** ~\n\nThank you for using Ebyk Bot!\nWe've grown to **~142 servers** and **~800,000+ users**!\nEbyk Bot was also officially **verified** by Discord\nThis could not have been done without your continued support\n\nEbykBot V3.0 has been released with new features and changes according to discord's new API\n**PLEASE** feel free to add me at ebyk#1660 and message me with bugs or suggestions\n", bot)
+    embed.add_field(name="Change Log", value=f"\n- addition of discord wide guild message and vc time leaderboards where servers are ranked based on their total messages sent and time spent in vc\n(server owners have the option to set an invite code to show up on the leaderboard as well)\nrun `eb h general` to check out new commands\n- bug fixes\n\n*Join the support server at: https://discord.gg/prcN3AtNcZ*", inline=False)
+    embed2 = lib.embed.systemEmbed(f"~ **IMPORTANT** ~\n\nIn order to access **slash commands**, you need to re-invite the bot using this new invite link:\nhttps://discord.com/api/oauth2/authorize?client_id=800171925275017237&permissions=277025508416&scope=bot%20applications.commands\n", bot)
     failed = []
     
     for server in bot.guilds:
@@ -111,11 +110,12 @@ async def updatemsg(ctx):
 @commands.is_owner()
 @bot.command()
 async def updatemsgtest(ctx):
-    embed = lib.embed.systemEmbed(f"""~ **EbykBot V3.0 UPDATE ANNOUNCEMENT** ~\n\nThank you for using Ebyk Bot!\nWe've grown to **~142 servers** and **~800,000+ users**!\nEbyk Bot was also officially **verified** by Discord\nThis could not have been done without your continued support\n\nEbykBot V3.0 has been released with new features and changes according to discord's new API\n**PLEASE** feel free to add me at ebyk#1660 and message me with bugs or suggestions\n""", bot)
-    embed.add_field(name="Change Log", value=f"""\n- addition of discord wide guild message and vc time leaderboards where servers are ranked based on their total messages sent and time spent in vc\n(server owners have the option to set an invite code to show up on the leaderboard as well)\nrun `eb h general` to check out new commands\n- bug fixes\n\n*Join the support server at: https://discord.gg/prcN3AtNcZ*""", inline=False)
-    embed2 = lib.embed.systemEmbed(f"""~ **IMPORTANT** ~\n\nIn order to access **slash commands**, you need to re-invite the bot using this new invite link:\nhttps://discord.com/api/oauth2/authorize?client_id=800171925275017237&permissions=277025508416&scope=bot%20applications.commands\n""", bot)
+    embed = lib.embed.systemEmbed(f"~ **EbykBot V3.0 UPDATE ANNOUNCEMENT** ~\n\nThank you for using Ebyk Bot!\nWe've grown to **~142 servers** and **~800,000+ users**!\nEbyk Bot was also officially **verified** by Discord\nThis could not have been done without your continued support\n\nEbykBot V3.0 has been released with new features and changes according to discord's new API\n**PLEASE** feel free to add me at ebyk#1660 and message me with bugs or suggestions\n", bot)
+    embed.add_field(name="Change Log", value=f"\n- addition of discord wide guild message and vc time leaderboards where servers are ranked based on their total messages sent and time spent in vc\n(server owners have the option to set an invite code to show up on the leaderboard as well)\nrun `eb h general` to check out new commands\n- bug fixes\n\n*Join the support server at: https://discord.gg/prcN3AtNcZ*", inline=False)
+    embed2 = lib.embed.systemEmbed(f"~ **IMPORTANT** ~\n\nIn order to access **slash commands**, you need to re-invite the bot using this new invite link:\nhttps://discord.com/api/oauth2/authorize?client_id=800171925275017237&permissions=277025508416&scope=bot%20applications.commands\n", bot)
     await ctx.send(content=None, embed=embed)
     await ctx.send(content=None, embed=embed2)
+"""
 
 @tasks.loop(hours=1.0)
 async def updatestats():
@@ -138,10 +138,29 @@ async def resetdailylb():
 updatestats.start()
 checkday.start()
 resetdailylb.start()
-       
+
+async def load():
+    print("loading extensions:")
+
+    """     for ext in extensions:
+        await bot.load_extension(ext)
+        print(f"    loaded cog: {ext}")
+
+    for sext in slashextensions:
+        await bot.load_extension(sext)
+        print(f"    loaded cog: {sext}")
+    """
+        
+    try:
+        synced = await bot.tree.sync()
+        print(f"Synced {len(synced)} command(s)")
+    except Exception as e:
+        print(e)
+
 async def main():
     token = read_token()
     lib.sql.cleanTimeLog()
-    await bot.start(token)
+    await load()
+    await bot.super().start(token)
 
 asyncio.run(main())

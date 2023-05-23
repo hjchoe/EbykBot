@@ -9,9 +9,9 @@ async def updatestatus(bot):
     for server in bot.guilds:
         totalusers += len(server.members)
     """
-    servermemcount = len(bot.guilds)
+    servercount = len(bot.guilds)
     
-    activity = discord.Game(name=f"{servermemcount} servers | eb h for help")
+    activity = discord.Game(name=f"{servercount} servers | eb h for help")
     await bot.change_presence(status=discord.Status.online, activity=activity)
 
 class GeneralCog(commands.Cog):
