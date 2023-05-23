@@ -36,10 +36,10 @@ class GeneralCog(commands.Cog):
         helpe.set_author(name="Ebyk Bot Help Page", icon_url=self.bot.user.avatar.url)
         helpe.set_footer(text="Programmed by ebyk#1660, dm for questions.")
         if section == 0:
-            helpe.add_field(name='/help General Help', value='open general commands help menu', inline=False)
-            helpe.add_field(name='/help Leaderboard Help', value='open message/vc leaderboards help menu', inline=False)
-            helpe.add_field(name='/help Economy Help', value='open economy help menu', inline=False)
-            helpe.add_field(name='/help Admin Help', value='open admin help menu', inline=False)
+            helpe.add_field(name='/help [General Help]', value='open general commands help menu', inline=False)
+            helpe.add_field(name='/help [Leaderboard Help]', value='open message/vc leaderboards help menu', inline=False)
+            helpe.add_field(name='/help [Economy Help]', value='open economy help menu', inline=False)
+            helpe.add_field(name='/help [Admin Help]', value='open admin help menu', inline=False)
         elif section == 1:
             helpe.add_field(name='/help', value='open help menu', inline=False)
             helpe.add_field(name='/test', value='test if the bot is online and get latency', inline=False)
@@ -51,20 +51,21 @@ class GeneralCog(commands.Cog):
             helpe.add_field(name='/guilds', value='get bot guild information', inline=False)
         elif section == 2:
             helpe.add_field(name='/messages', value='check how many messages you sent', inline=False)
-            helpe.add_field(name='/message weekly leaderboard', value='check the weekly message leaderboard', inline=False)
-            helpe.add_field(name='/message total leaderboard', value='check the total message leaderboard', inline=False)
-            helpe.add_field(name='/message daily leaderboard', value='check the daily message leaderboard', inline=False)
+            helpe.add_field(name='/message leaderboard [Daily]', value='check the daily message leaderboard', inline=False)
+            helpe.add_field(name='/message leaderboard [Weekly]', value='check the weekly message leaderboard', inline=False)
+            helpe.add_field(name='/message leaderboard [Total]', value='check the total message leaderboard', inline=False)
             helpe.add_field(name='/vc', value='check how much time you spent in vc', inline=False)
-            helpe.add_field(name='/vc weekly leaderboard', value='check the weekly vc leaderboard', inline=False)
-            helpe.add_field(name='/vc daily leaderboard', value='check the total vc leaderboard', inline=False)
-
+            helpe.add_field(name='/vc leaderboard [Daily]', value='check the daily vc leaderboard', inline=False)
+            helpe.add_field(name='/vc leaderboard [Weekly]', value='check the weekly vc leaderboard', inline=False)
+            helpe.add_field(name='/vc leaderboard [Total]', value='check the total vc leaderboard', inline=False)
             helpe.add_field(name='/guild messages', value='check how many messages current server has sent', inline=False)
-            helpe.add_field(name='/guild message leaderboard', value='check the weekly guild message leaderboard', inline=False)
-            helpe.add_field(name='/guild message total leaderboard', value='check the total guild message leaderboard', inline=False)
-            helpe.add_field(name='/guild message daily leaderboard', value='check the daily guild message leaderboard', inline=False)
+            helpe.add_field(name='/guild message leaderboard [Daily]', value='check the daily guild message leaderboard', inline=False)
+            helpe.add_field(name='/guild message leaderboard [Weekly]', value='check the weekly guild message leaderboard', inline=False)
+            helpe.add_field(name='/guild message leaderboard [Total]', value='check the total guild message leaderboard', inline=False)
             helpe.add_field(name='/guild vc', value='check how much time current server has spent in vc', inline=False)
-            helpe.add_field(name='/guild vc leaderboard', value='check the weekly guild vc leaderboard', inline=False)
-            helpe.add_field(name='/guild vc total leaderboard', value='check the total guild vc leaderboard', inline=False)
+            helpe.add_field(name='/guild vc leaderboard [Daily]', value='check the daily guild vc leaderboard', inline=False)
+            helpe.add_field(name='/guild vc leaderboard [Weekly]', value='check the weekly guild vc leaderboard', inline=False)
+            helpe.add_field(name='/guild vc leaderboard [Total]', value='check the total guild vc leaderboard', inline=False)
         elif section == 3:
             helpe.add_field(name='/balance', value='check your balance', inline=False)
             helpe.add_field(name='/balance leaderboard', value='check the server balance leaderboard', inline=False)
@@ -81,7 +82,7 @@ class GeneralCog(commands.Cog):
 
     ##---------- INVITE -----------##
     @app_commands.command(name="invite", description="Provides invite link for bot.")
-    async def invite(self, interaction: discord.Interaction):
+    async def invite(self, interaction: discord.Interaction) -> None:
         embed = lib.embed.systemEmbed('**Invite:** https://discord.com/api/oauth2/authorize?client_id=800171925275017237&permissions=277025508416&scope=bot%20applications.commands\nadd + dm **ebyk#1660** for questions or suggestions', self.bot)
         await interaction.response.send_message(content=None, embed=embed)
 

@@ -10,7 +10,7 @@ class TestCog(commands.Cog):
 
     ##---------- TEST -----------##
     @app_commands.command(name="test", description="Test command with bot latency.")
-    async def test(self, interaction: discord.Interaction):
+    async def test(self, interaction: discord.Interaction) -> None:
         latency = round(self.bot.latency * 1000)
         embed = lib.embed.systemEmbed(f"""responding!\n\n**Ping: **{latency}ms""", self.bot)
         await interaction.response.send_message(content=None, embed=embed)
