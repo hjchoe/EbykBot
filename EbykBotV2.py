@@ -1,6 +1,7 @@
 ##-------------------------------------------------- IMPORTS ---------------------------------------------------##
 
 import discord
+from discord import app_commands
 from discord.ext import tasks
 from discord.ext import commands
 
@@ -18,13 +19,40 @@ intents.messages = False
 intents.members = False
 intents.presences = False
 
+appid = 800171925275017237
+testappid = 809790823780450304
+
 extensions = ['cogs.general', 'cogs.leaderboards', 'cogs.info', 'cogs.econ', 'cogs.admin']
 slashextensions = ['slashcogs.slashgeneral', 'slashcogs.slashleaderboards', 'slashcogs.slashinfo', 'slashcogs.slashecon', 'slashcogs.slashadmin']
 
 class MyBot(commands.Bot):
     def __init__(self):
-        super().__init__(command_prefix="eb ", case_insensitive=True, owner_id=329326685185114115, help_command=None, intents=intents)
+        super().__init__(command_prefix="eb ", case_insensitive=True, owner_id=329326685185114115, help_command=None, tree_cls=app_commands.tree.CommandTree, intents=intents, application_id=testappid)
         #self.setup_hook(self)
+
+    async def setup_hook(self):
+        print("loading extensions:")
+
+        await self.load_extension('testcog')
+        print("    loaded test cog")
+
+        """     for ext in extensions:
+            await bot.load_extension(ext)
+            print(f"    loaded cog: {ext}")
+
+        for sext in slashextensions:
+            await bot.load_extension(sext)
+            print(f"    loaded cog: {sext}")
+        """
+
+        await self.sync()
+    
+    async def sync(self):
+        try:
+            synced = await self.tree.sync()
+            print(f"Synced {len(synced)} command(s)")
+        except Exception as e:
+            print(e)
 
     async def on_connect(self):
         print("Connected!")
@@ -135,32 +163,12 @@ async def resetdailylb():
     await bot.wait_until_ready()
     lib.sql.resetdlb()
 
-updatestats.start()
-checkday.start()
-resetdailylb.start()
-
-async def load():
-    print("loading extensions:")
-
-    """     for ext in extensions:
-        await bot.load_extension(ext)
-        print(f"    loaded cog: {ext}")
-
-    for sext in slashextensions:
-        await bot.load_extension(sext)
-        print(f"    loaded cog: {sext}")
-    """
-        
-    try:
-        synced = await bot.tree.sync()
-        print(f"Synced {len(synced)} command(s)")
-    except Exception as e:
-        print(e)
-
 async def main():
     token = read_token()
     lib.sql.cleanTimeLog()
-    await load()
-    await bot.super().start(token)
+    await bot.start(token)
+    await updatestats.start()
+    await checkday.start()
+    await resetdailylb.start()
 
 asyncio.run(main())
