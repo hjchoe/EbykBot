@@ -8,7 +8,6 @@ from discord.ext import commands
 import lib.embed
 import lib.economy
 import lib.sql
-import cogs.general
 
 import asyncio
 import time
@@ -23,7 +22,7 @@ appid = 800171925275017237
 testappid = 809790823780450304
 
 extensions = ['cogs.general', 'cogs.leaderboards', 'cogs.info', 'cogs.econ', 'cogs.admin']
-slashextensions = ['slashcogs.slashgeneral', 'slashcogs.slashleaderboards', 'slashcogs.slashinfo', 'slashcogs.slashecon', 'slashcogs.slashadmin']
+# slashextensions = ['slashcogs.slashgeneral', 'slashcogs.slashleaderboards', 'slashcogs.slashinfo', 'slashcogs.slashecon', 'slashcogs.slashadmin']
 
 class MyBot(commands.Bot):
     def __init__(self):
@@ -36,14 +35,9 @@ class MyBot(commands.Bot):
         await self.load_extension('testcog')
         print("    loaded test cog")
 
-        """     for ext in extensions:
+        for ext in extensions:
             await bot.load_extension(ext)
             print(f"    loaded cog: {ext}")
-
-        for sext in slashextensions:
-            await bot.load_extension(sext)
-            print(f"    loaded cog: {sext}")
-        """
 
         await self.sync()
     
@@ -59,6 +53,10 @@ class MyBot(commands.Bot):
 
     async def on_ready(self):
         print("Logged on as {0}!".format(self.user))
+
+    async def close(self):
+        await super().close()
+        await self.session.close()
 
 bot = MyBot()
 
