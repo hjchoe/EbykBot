@@ -36,8 +36,11 @@ class MyBot(commands.Bot):
         print("    loaded test cog")
 
         for ext in extensions:
-            await bot.load_extension(ext)
-            print(f"    loaded cog: {ext}")
+            try:
+                await bot.load_extension(ext)
+                print(f"    loaded cog: {ext}")
+            except:
+                print(f"        FAILED LOADING COG: {ext}")
 
         await self.sync()
     
@@ -53,6 +56,17 @@ class MyBot(commands.Bot):
 
     async def on_ready(self):
         print("Logged on as {0}!".format(self.user))
+
+    async def updatestatus(bot):
+        """
+        totalusers = 0
+        for server in bot.guilds:
+            totalusers += len(server.members)
+        """
+        servercount = len(bot.guilds)
+        
+        activity = discord.Game(name=f"{servercount} servers | /help")
+        await bot.change_presence(status=discord.Status.online, activity=activity)
 
     async def close(self):
         await super().close()
@@ -146,7 +160,7 @@ async def updatemsgtest(ctx):
 @tasks.loop(hours=1.0)
 async def updatestats():
     await bot.wait_until_ready()
-    await cogs.general.updatestatus(bot)
+    await bot.updatestatus(bot)
 
 @tasks.loop(hours=12.0)
 async def checkday():
