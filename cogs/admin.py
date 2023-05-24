@@ -70,5 +70,5 @@ class AdminCog(commands.Cog):
         embed = lib.embed.systemEmbed(f"Set {interactions.guild.name}'s invite to: https://discord.gg/{code}.", self.bot)
         await interactions.response.send_message(content=None, embed=embed)
 
-def setup(bot: commands.Bot):
-    bot.add_cog(AdminCog(bot))
+async def setup(bot: commands.Bot) -> None:
+    await bot.add_cog(AdminCog(bot))

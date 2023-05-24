@@ -96,5 +96,5 @@ class InfoCog(commands.Cog):
         embed = lib.embed.systemEmbed(f"""Currently in **{guilds}** servers.""", self.bot)
         await interaction.response.send_message(content=None, embed=embed)
 
-def setup(bot: commands.Bot):
-    bot.add_cog(InfoCog(bot))
+async def setup(bot: commands.Bot) -> None:
+    await bot.add_cog(InfoCog(bot))

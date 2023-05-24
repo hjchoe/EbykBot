@@ -376,5 +376,5 @@ class LeaderboardsCog(commands.Cog):
             c.execute('DELETE FROM timeLog WHERE userid = ?', (member.id,))
             conn.commit()
 
-def setup(bot: commands.Bot):
-    bot.add_cog(LeaderboardsCog(bot))
+async def setup(bot: commands.Bot) -> None:
+    await bot.add_cog(LeaderboardsCog(bot))

@@ -15,5 +15,5 @@ class TestCog(commands.Cog):
         embed = lib.embed.systemEmbed(f"""responding!\n\n**Ping: **{latency}ms""", self.bot)
         await interaction.response.send_message(content=None, embed=embed)
 
-async def setup(bot: commands.Bot):
+async def setup(bot: commands.Bot) -> None:
     await bot.add_cog(TestCog(bot))

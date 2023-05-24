@@ -66,5 +66,5 @@ class EconCog(commands.Cog):
             embed = lib.embed.errorEmbed(interaction, f"You can't give more than you have. Balance: **${bank}**", "Balance Error")
         await interaction.response.send_message(content=None, embed=embed)
 
-def setup(bot: commands.Bot):
-    bot.add_cog(EconCog(bot))
+async def setup(bot: commands.Bot) -> None:
+    await bot.add_cog(EconCog(bot))
