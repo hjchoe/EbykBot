@@ -84,78 +84,220 @@ def read_token():
         lines = f.readlines()
         return lines[0].strip()
 
-""" ##---------- Update Message -----------##
-@commands.is_owner()
-@bot.command()
-async def updatemsg(ctx):
-    embed = lib.embed.systemEmbed(f"~ **EbykBot V3.0 UPDATE ANNOUNCEMENT** ~\n\nThank you for using Ebyk Bot!\nWe've grown to **~142 servers** and **~800,000+ users**!\nEbyk Bot was also officially **verified** by Discord\nThis could not have been done without your continued support\n\nEbykBot V3.0 has been released with new features and changes according to discord's new API\n**PLEASE** feel free to add me at ebyk#1660 and message me with bugs or suggestions\n", bot)
-    embed.add_field(name="Change Log", value=f"\n- addition of discord wide guild message and vc time leaderboards where servers are ranked based on their total messages sent and time spent in vc\n(server owners have the option to set an invite code to show up on the leaderboard as well)\nrun `eb h general` to check out new commands\n- bug fixes\n\n*Join the support server at: https://discord.gg/prcN3AtNcZ*", inline=False)
-    embed2 = lib.embed.systemEmbed(f"~ **IMPORTANT** ~\n\nIn order to access **slash commands**, you need to re-invite the bot using this new invite link:\nhttps://discord.com/api/oauth2/authorize?client_id=800171925275017237&permissions=277025508416&scope=bot%20applications.commands\n", bot)
-    failed = []
-    
-    for server in bot.guilds:
-        print(server.owner_id)
-        try:
-            member = await server.fetch_member(server.owner_id)
-            await member.send(content=None, embed=embed)
-            await member.send(content=None, embed=embed2)
-            print(f"message sent [{server.name}]")
-            time.sleep(1)
-        except:
-            print(f"message FAILED [{server.name}]")
-            failed.append(server)
-    
+##-------------------------------------------------- EVENTS ---------------------------------------------------##
 
-    print(f"\n\nSECOND ATTEMPT\n\n")
-    time.sleep(30)
-    for server in failed:
-        try:
-            member = await server.fetch_member(server.owner_id)
-            await member.send(content=None, embed=embed)
-            await member.send(content=None, embed=embed2)
-            print(f"message sent [{server.name}]")
-            failed.remove(server)
-            time.sleep(10)
-        except:
-            print(f"message FAILED [{server.name}]")
-    
-    print(f"\n\nTHIRD ATTEMPT\n\n")
-    time.sleep(30)
-    for server in failed:
-        tchannel = None
-        for tc in server.text_channels:
-            state = False
+@bot.listen()
+async def on_message(self, message) -> None:
+    print("detected message")
+    #await self.bot.process_commands(message)
+    ctx = await self.bot.get_context(message)
+    if not ctx.valid:
+        if message.author.bot:
+            return
+
+        if self.bot.user.mentioned_in(message) and not message.mention_everyone:
+            embed = lib.embed.systemEmbed("**prefix:** /\nSend `/help` for my help menu!", self.bot)
+            await message.channel.send(content=None, embed=embed)
+
+        if message.guild is None and message.author is not self.bot.user and '/help' not in message.content.lower():
+            await message.author.send("Hey I'm Ebyk Bot, run the command **/help** to check out what I offer!")
+            return
+
+        conn, c = lib.sql.connect(message.guild.id)
+        gconn, gc = lib.sql.glb_connect()
+
+        c.execute("SELECT msgs FROM msgCount WHERE userid = ?", (message.author.id,))
+        count = c.fetchone()
+        c.execute("SELECT tmsgs FROM totalmsgCount WHERE userid = ?", (message.author.id,))
+        tcount = c.fetchone()
+        c.execute("SELECT dmsgs FROM dmsgCount WHERE userid = ?", (message.author.id,))
+        dcount = c.fetchone()
+
+        gc.execute("SELECT msgs FROM guildmsgcount WHERE guildid = ?", (message.guild.id,))
+        gcount = gc.fetchone()
+        gc.execute("SELECT tmsgs FROM tguildmsgcount WHERE guildid = ?", (message.guild.id,))
+        gtcount = gc.fetchone()
+        gc.execute("SELECT dmsgs FROM dguildmsgcount WHERE guildid = ?", (message.guild.id,))
+        gdcount = gc.fetchone()
+
+        if count is None:
+            c.execute('INSERT INTO msgCount (userid, msgs) VALUES (?,?)', (message.author.id, 1))
+            conn.commit()
+        else:
+            oldNum = count[0]
+            newNum = oldNum + 1
+            c.execute('UPDATE msgCount SET msgs = ? WHERE userid = ?', (newNum, message.author.id))
+            conn.commit()
+
+        if tcount is None:
+            c.execute('INSERT INTO totalmsgCount (userid, tmsgs) VALUES (?,?)', (message.author.id, 1))
+            conn.commit()
+        else:
+            toldNum = tcount[0]
+            tnewNum = toldNum + 1
+            c.execute('UPDATE totalmsgCount SET tmsgs = ? WHERE userid = ?', (tnewNum, message.author.id))
+            conn.commit()
+
+        if dcount is None:
+            c.execute('INSERT INTO dmsgCount (userid, dmsgs) VALUES (?,?)', (message.author.id, 1))
+            conn.commit()
+        else:
+            doldNum = dcount[0]
+            dnewNum = doldNum + 1
+            c.execute('UPDATE dmsgCount SET dmsgs = ? WHERE userid = ?', (dnewNum, message.author.id))
+            conn.commit()
+
+        if gcount is None:
+            gc.execute('INSERT INTO guildmsgcount (guildid, msgs) VALUES (?,?)', (message.guild.id, 1))
+            gconn.commit()
+        else:
+            oldNum = count[0]
+            newNum = oldNum + 1
+            gc.execute('UPDATE guildmsgcount SET msgs = ? WHERE guildid = ?', (newNum, message.guild.id))
+            gconn.commit()
+
+        if gtcount is None:
+            gc.execute('INSERT INTO tguildmsgcount (guildid, tmsgs) VALUES (?,?)', (message.guild.id, 1))
+            gconn.commit()
+        else:
+            toldNum = tcount[0]
+            tnewNum = toldNum + 1
+            gc.execute('UPDATE tguildmsgcount SET tmsgs = ? WHERE guildid = ?', (tnewNum, message.guild.id))
+            gconn.commit()
+
+        if gdcount is None:
+            gc.execute('INSERT INTO dguildmsgcount (guildid, dmsgs) VALUES (?,?)', (message.guild.id, 1))
+            gconn.commit()
+        else:
+            doldNum = dcount[0]
+            dnewNum = doldNum + 1
+            gc.execute('UPDATE dguildmsgcount SET dmsgs = ? WHERE guildid = ?', (dnewNum, message.guild.id))
+            gconn.commit()
+
+        c.execute("SELECT money FROM bank WHERE userid = ?", (message.author.id,))
+        kaching = c.fetchone()
+
+        if kaching is None:
+            c.execute('INSERT INTO bank (userid, money) VALUES (?,?)', (message.author.id, 1))
+            conn.commit()
+        else:
+            oldNum = kaching[0]
+            newNum = oldNum + 1
+            c.execute('UPDATE bank SET money = ? WHERE userid = ?', (newNum, message.author.id))
+            conn.commit()
+
+@bot.listen()
+async def on_voice_state_update(self, member, before, after) -> None:
+    if member.bot:
+        return
+
+    conn, c = lib.sql.connect(member.guild.id)
+    gconn, gc = lib.sql.glb_connect()
+    if before.channel is None and not after.channel is None and not after.afk: #vc join
+        timestart = datetime.datetime.utcnow()
+        c.execute('INSERT INTO timeLog (userid, jTime) VALUES (?,?)', (member.id, timestart))
+        conn.commit()
+
+    if before.afk and not after.channel is None: #moving from afk to channel
+        timestart = datetime.datetime.utcnow()
+        c.execute('INSERT INTO timeLog (userid, jTime) VALUES (?,?)', (member.id, timestart))
+        conn.commit()
+
+    if after.channel == None or after.afk: #vc left
+
+        c.execute('SELECT jTime FROM timeLog WHERE userid = ?', (member.id,))
+        jTimeList = c.fetchone()
+        jTime = jTimeList[0]
+        lTime = datetime.datetime.utcnow()
+        sjTime = str(jTime)
+        slTime = str(lTime)
+        jTimeHours = int(sjTime[11:13])
+        lTimeHours = int(slTime[11:13])
+        jTimeMins = int(sjTime[14:16])
+        lTimeMins = int(sjTime[14:16])
+        jTimeDay = int(sjTime[8:10])
+        jTimeMonth = int(sjTime[5:7])
+        jTimeYear = int(sjTime[0:4])
+        fjTime = datetime.datetime(jTimeYear, jTimeMonth, jTimeDay, jTimeHours, jTimeMins)
+        totalTime = lTime - fjTime
+
+        c.execute('SELECT vc FROM vcTime WHERE userid = ?', (member.id,))
+        vcount = c.fetchone()
+        c.execute('SELECT "tvc" FROM "totalvcTime" WHERE "userid" = ?', (member.id,))
+        tvcount = c.fetchone()
+        c.execute('SELECT dvc FROM dvcTime WHERE userid = ?', (member.id,))
+        dvcount = c.fetchone()
+
+        gc.execute('SELECT vc FROM guildvctime WHERE guildid = ?', (member.guild.id,))
+        gvcount = gc.fetchone()
+        gc.execute('SELECT "tvc" FROM tguildvctime WHERE guildid = ?', (member.guild.id,))
+        gtvcount = gc.fetchone()
+        gc.execute('SELECT dvc FROM dguildvctime WHERE guildid = ?', (member.guild.id,))
+        gdvcount = gc.fetchone()
+
+        if not "day" in str(totalTime):  # checking if date is same
             try:
-                member = await server.fetch_member(server.owner_id)
-                await tc.send(content=f"{member.mention}")
-                state = True
-                tchannel = tc
+                totalMins = int(str(totalTime)[3:5]) + (int(str(totalTime)[0:2]) * 60)
             except:
-                pass
-            if state == True:
-                break
-        try:
-            member = await server.fetch_member(server.owner_id)
-            await tchannel.send(content="", embed=embed)
-            await tchannel.send(content=None, embed=embed2)
-            print(f"message sent [{server.name}] in ({tc.name})")
-            failed.remove(server)
-            time.sleep(10)
-        except:
-            print(f"message FAILED [{server.name}] in ({tc.name})")
+                totalMins = int(str(totalTime)[2:4]) + (int(str(totalTime)[0:1]) * 60)
+        else:
+            try:
+                totalMins = ((int(str(totalTime)[0]) * 24) * 60) + int(str(totalTime)[10:12]) + (int(str(totalTime)[7:9]) * 60)
+            except:
+                totalMins = ((int(str(totalTime)[0]) * 24) * 60) + int(str(totalTime)[9:11]) + (int(str(totalTime)[7:8]) * 60)
+        
+        if vcount is None:
+            c.execute('INSERT INTO vcTime (userid, vc) VALUES (?,?)', (member.id, totalMins))
+            conn.commit()
+        else:
+            newcount = totalMins + vcount[0]
+            c.execute('UPDATE vcTime SET vc = ? WHERE userid = ?', (newcount, member.id))
+            conn.commit()
 
-    print(f"done with {len(failed)} fails")
+        if tvcount is None:
+            c.execute('INSERT INTO "totalvcTime" ("userid", "tvc") VALUES (?,?)', (member.id, totalMins))
+            conn.commit()
+        else:
+            newcount = totalMins + tvcount[0]
+            c.execute('UPDATE "totalvcTime" SET "tvc" = ? WHERE  "userid" = ?', (newcount, member.id))
+            conn.commit()
 
-##---------- Update Test -----------##
-@commands.is_owner()
-@bot.command()
-async def updatemsgtest(ctx):
-    embed = lib.embed.systemEmbed(f"~ **EbykBot V3.0 UPDATE ANNOUNCEMENT** ~\n\nThank you for using Ebyk Bot!\nWe've grown to **~142 servers** and **~800,000+ users**!\nEbyk Bot was also officially **verified** by Discord\nThis could not have been done without your continued support\n\nEbykBot V3.0 has been released with new features and changes according to discord's new API\n**PLEASE** feel free to add me at ebyk#1660 and message me with bugs or suggestions\n", bot)
-    embed.add_field(name="Change Log", value=f"\n- addition of discord wide guild message and vc time leaderboards where servers are ranked based on their total messages sent and time spent in vc\n(server owners have the option to set an invite code to show up on the leaderboard as well)\nrun `eb h general` to check out new commands\n- bug fixes\n\n*Join the support server at: https://discord.gg/prcN3AtNcZ*", inline=False)
-    embed2 = lib.embed.systemEmbed(f"~ **IMPORTANT** ~\n\nIn order to access **slash commands**, you need to re-invite the bot using this new invite link:\nhttps://discord.com/api/oauth2/authorize?client_id=800171925275017237&permissions=277025508416&scope=bot%20applications.commands\n", bot)
-    await ctx.send(content=None, embed=embed)
-    await ctx.send(content=None, embed=embed2)
-"""
+        if dvcount is None:
+            c.execute('INSERT INTO dvcTime (userid, dvc) VALUES (?,?)', (member.id, totalMins))
+            conn.commit()
+        else:
+            newcount = totalMins + dvcount[0]
+            c.execute('UPDATE dvcTime SET dvc = ? WHERE  userid = ?', (newcount, member.id))
+            conn.commit()
+
+        if gvcount is None:
+            gc.execute('INSERT INTO guildvctime (guildid, vc) VALUES (?,?)', (member.guild.id, totalMins))
+            gconn.commit()
+        else:
+            newcount = totalMins + vcount[0]
+            gc.execute('UPDATE guildvctime SET vc = ? WHERE guildid = ?', (newcount, member.guild.id))
+            gconn.commit()
+
+        if gtvcount is None:
+            gc.execute('INSERT INTO tguildvctime (guildid, tvc) VALUES (?,?)', (member.guild.id, totalMins))
+            gconn.commit()
+        else:
+            newcount = totalMins + tvcount[0]
+            gc.execute('UPDATE tguildvctime SET tvc = ? WHERE  guildid = ?', (newcount, member.guild.id))
+            gconn.commit()
+
+        if gdvcount is None:
+            gc.execute('INSERT INTO dguildvctime (guildid, dvc) VALUES (?,?)', (member.guild.id, totalMins))
+            gconn.commit()
+        else:
+            newcount = totalMins + tvcount[0]
+            gc.execute('UPDATE dguildvctime SET dvc = ? WHERE  guildid = ?', (newcount, member.guild.id))
+            gconn.commit()        
+
+        c.execute('DELETE FROM timeLog WHERE userid = ?', (member.id,))
+        conn.commit()
+
+##-------------------------------------------------- Task Loops ---------------------------------------------------##
 
 @tasks.loop(hours=1.0)
 async def updatestats():
