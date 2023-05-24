@@ -61,8 +61,8 @@ class LeaderboardsCog(commands.Cog):
             userid = interaction.author.id
         else:
             userid = user.id
-        hours, minutes, thours, tminutes = lib.sql.vcount(userid, interaction.guild.id)
-        embed = await lib.embed.vcEmbed(interaction, userid, hours, minutes, thours, tminutes)
+        hours, minutes, thours, tminutes, dhours, dminutes = lib.sql.vcount(userid, interaction.guild.id)
+        embed = await lib.embed.vcEmbed(interaction, userid, hours, minutes, thours, tminutes, dhours, dminutes)
         await interaction.response.send_message(content=None, embed=embed)
 
     ##---------- Vc Time Leaderboard ----------##
@@ -133,8 +133,8 @@ class LeaderboardsCog(commands.Cog):
     ##---------- Guild Vc Time ----------##
     @app_commands.command(name="guild vc", description="Shows the vc time of a guild.")
     async def guildvctime(self, interaction: discord.Interaction) -> None:
-        hours, minutes, thours, tminutes = lib.sql.glb_vcount(interaction.guild.id)
-        embed = lib.embed.glb_vcEmbed(interaction, self.bot, hours, minutes, thours, tminutes)
+        hours, minutes, thours, tminutes, dhours, dminutes = lib.sql.glb_vcount(interaction.guild.id)
+        embed = lib.embed.glb_vcEmbed(interaction, self.bot, hours, minutes, thours, tminutes, dhours, dminutes)
         await interaction.response.send_message(content=None, embed=embed)
 
     ##---------- Guild Vc Time Leaderboard ----------##

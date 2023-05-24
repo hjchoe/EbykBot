@@ -20,7 +20,7 @@ class InfoCog(commands.Cog):
         posreal = pos + 1
 
         msgcount, tmsgcount, dmsgcount = lib.sql.messagecount(user.id, interaction.guild.id)
-        userhours, usermins, tuserhours, tusermins = lib.sql.vcount(user.id, interaction.guild.id)
+        userhours, usermins, tuserhours, tusermins, duserhours, dusermins= lib.sql.vcount(user.id, interaction.guild.id)
         bal = lib.sql.balancegrab(user.id, interaction.guild.id)
 
         whois = discord.Embed(title='', description=f"""<@{user.id}>""", color=10181046)

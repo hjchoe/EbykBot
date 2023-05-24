@@ -29,15 +29,15 @@ def glb_messageEmbed(interaction: discord.Interaction, bot, messages, tmessages,
     embed.set_author(name=f"""{guild.name}'s # of messages""", icon_url=guild.icon.url)
     return embed
 
-async def vcEmbed(interaction: discord.Interaction, userid, hours, minutes, thours, tminutes):
-    embed = discord.Embed(title='', description=f"**Weekly:** \n**{hours}** hours and **{minutes}** minutes \n\n**Total:** \n**{thours}** hours and **{tminutes}** minutes", color=16645526)
+async def vcEmbed(interaction: discord.Interaction, userid, hours, minutes, thours, tminutes, dhours, dminutes):
+    embed = discord.Embed(title='', description=f"**Daily:** \n**{dhours}** hours and **{dminutes}** \n\n**Weekly:** \n**{hours}** hours and **{minutes}** minutes \n\n**Total:** \n**{thours}** hours and **{tminutes}** minutes", color=16645526)
     # member = discord.utils.get(ctx.author.guild.members, id=userid)
     member = await interaction.guild.fetch_member(userid)
     embed.set_author(name=f"""{member.name}'s vc time""", icon_url=member.avatar.url)
     return embed
 
-def glb_vcEmbed(interaction: discord.Interaction, bot, hours, minutes, thours, tminutes):
-    embed = discord.Embed(title='', description=f"**Weekly:** \n**{hours}** hours and **{minutes}** minutes \n\n**Total:** \n**{thours}** hours and **{tminutes}** minutes", color=16645526)
+def glb_vcEmbed(interaction: discord.Interaction, bot, hours, minutes, thours, tminutes, dhours, dminutes):
+    embed = discord.Embed(title='', description=f"**Daily:** \n**{dhours}** hours and **{dminutes}** \n\n**Weekly:** \n**{hours}** hours and **{minutes}** minutes \n\n**Total:** \n**{thours}** hours and **{tminutes}** minutes", color=16645526)
     guild = bot.get_guild(interaction.guild.id)
     embed.set_author(name=f"""{guild.name}'s vc time""", icon_url=guild.icon.url)
     return embed

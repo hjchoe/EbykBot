@@ -36,11 +36,15 @@ class MyBot(commands.Bot):
         print("    loaded test cog")
 
         for ext in extensions:
+            await bot.load_extension(ext)
+
+        """
             try:
                 await bot.load_extension(ext)
                 print(f"    loaded cog: {ext}")
             except:
                 print(f"        FAILED LOADING COG: {ext}")
+        """
 
         await self.sync()
     
