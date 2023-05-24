@@ -86,7 +86,7 @@ def read_token():
 
 ##-------------------------------------------------- EVENTS ---------------------------------------------------##
 
-@bot.listen()
+@bot.event()
 async def on_message(self, message) -> None:
     print("detected message")
     #await self.bot.process_commands(message)
@@ -186,7 +186,7 @@ async def on_message(self, message) -> None:
             c.execute('UPDATE bank SET money = ? WHERE userid = ?', (newNum, message.author.id))
             conn.commit()
 
-@bot.listen()
+@bot.event()
 async def on_voice_state_update(self, member, before, after) -> None:
     if member.bot:
         return
