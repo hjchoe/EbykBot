@@ -10,7 +10,7 @@ class InfoCog(commands.Cog):
         self.bot = bot
 
     ##---------- Userinfo -----------##
-    @app_commands.command(name="user info", description="Shows information about a user.")
+    @app_commands.command(name="userinfo", description="Shows information about a user.")
     @app_commands.describe(user="The user you want the info of (enter nothing for your vc time).")
     async def userinfo(self, interaction: discord.Interaction, user: discord.Member=None) -> None:
         if user is None:
@@ -43,7 +43,7 @@ class InfoCog(commands.Cog):
         await interaction.response.send_message(content=None, embed=whois)
 
     ##---------- serverinfo -----------##
-    @app_commands.command(name="server info", description="Shows information about current server.")
+    @app_commands.command(name="serverinfo", description="Shows information about current server.")
     async def serverinfo(self, interaction: discord.Interaction) -> None:
         guild = interaction.guild
 

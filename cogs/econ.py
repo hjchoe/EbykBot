@@ -11,7 +11,7 @@ class EconCog(commands.Cog):
         self.bot = bot
     
     ##---------- coinflip ----------##
-    @app_commands.command(name="coin flip", description="Flip a coin and wager for a 50/50 chance at x2.")
+    @app_commands.command(name="coin_flip", description="Flip a coin and wager for a 50/50 chance at x2.")
     @app_commands.describe(side="The side of the coin to bet on: 'heads' or 'tails'.", betamount="The amount of money to bet.")
     @app_commands.choices(side=[
         Choice(name="heads", value="heads"),
@@ -47,14 +47,14 @@ class EconCog(commands.Cog):
         await interaction.response.send_message(content=None, embed=embed)
 
     ##---------- Balance Leaderboard ----------##
-    @app_commands.command(name="balance leaderboard", description="Shows balance leaderboard.")
+    @app_commands.command(name="balance_leaderboard", description="Shows balance leaderboard.")
     async def balanceleaderboard(self, interaction: discord.Interaction) -> None:
         lb = await lib.sql.balleaderboard(self.bot, interaction.guild.id)
         embed = lib.embed.lbEmbed(interaction, "Bank", lb)
         await interaction.response.send_message(content=None, embed=embed)
 
     ##---------- give ----------##
-    @app_commands.command(description="Give an amount of your money to another user.")
+    @app_commands.command(name="give", description="Give an amount of your money to another user.")
     @app_commands.describe(user="The user you want to transfer your money to.", amount="The amount to transfer.")
     async def give(self, interaction: discord.Interaction, user: discord.Member, amount: int) -> None:
         bank = lib.sql.balancegrab(interaction.author.id, interaction.guild.id)

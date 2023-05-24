@@ -25,7 +25,7 @@ class LeaderboardsCog(commands.Cog):
         await interaction.response.send_message(content=None, embed=embed)
 
     ##---------- Message Leaderboard ----------##
-    @app_commands.command(name="message leaderboard", description="Shows the message leaderboard for daily, weekly, or total periods.")
+    @app_commands.command(name="message_leaderboard", description="Shows the message leaderboard for daily, weekly, or total periods.")
     @app_commands.describe(period="which leaderboard period (daily, weekly, or total).")
     @app_commands.choices(period=[
         Choice(name="Daily", value=0),
@@ -66,7 +66,7 @@ class LeaderboardsCog(commands.Cog):
         await interaction.response.send_message(content=None, embed=embed)
 
     ##---------- Vc Time Leaderboard ----------##
-    @app_commands.command(name="vc leaderboard", description="Shows the vc time leaderboard for daily, weekly, or total periods.")
+    @app_commands.command(name="vc_leaderboard", description="Shows the vc time leaderboard for daily, weekly, or total periods.")
     @app_commands.describe(period="which leaderboard period (daily, weekly, or total).")
     @app_commands.choices(period=[
         Choice(name="Daily", value=0),
@@ -95,14 +95,14 @@ class LeaderboardsCog(commands.Cog):
         await interaction.response.send_message(content=None, embed=embed)
 
     ##---------- Guild Message Count ----------##
-    @app_commands.command(name="guild messages", description="Shows the messages of a guild.")
+    @app_commands.command(name="guild_messages", description="Shows the messages of a guild.")
     async def guildmessages(self, interaction = discord.Interaction) -> None:
         umsgcount, tmsgcount, dmsgcount = lib.sql.glb_messagecount(interaction.guild.id)
         embed = lib.embed.glb_messageEmbed(interaction, self.bot, umsgcount, tmsgcount, dmsgcount)
         await interaction.response.send_message(content=None, embed=embed)
 
     ##---------- Guild Message Leaderboard ----------##
-    @app_commands.command(name="guild message leaderboard", description="Shows the guild message leaderboard for daily, weekly, or total periods.")
+    @app_commands.command(name="guild_message_leaderboard", description="Shows the guild message leaderboard for daily, weekly, or total periods.")
     @app_commands.describe(period="which leaderboard period (daily, weekly, or total).")
     @app_commands.choices(period=[
         Choice(name="Daily", value=0),
@@ -131,14 +131,14 @@ class LeaderboardsCog(commands.Cog):
         await interaction.response.send_message(content=None, embed=embed)
 
     ##---------- Guild Vc Time ----------##
-    @app_commands.command(name="guild vc", description="Shows the vc time of a guild.")
+    @app_commands.command(name="guild_vc", description="Shows the vc time of a guild.")
     async def guildvctime(self, interaction: discord.Interaction) -> None:
         hours, minutes, thours, tminutes, dhours, dminutes = lib.sql.glb_vcount(interaction.guild.id)
         embed = lib.embed.glb_vcEmbed(interaction, self.bot, hours, minutes, thours, tminutes, dhours, dminutes)
         await interaction.response.send_message(content=None, embed=embed)
 
     ##---------- Guild Vc Time Leaderboard ----------##
-    @app_commands.command(name="guild vc leaderboard", description="Shows the guild vc time leaderboard for daily, weekly, or total periods.")
+    @app_commands.command(name="guild_vc_leaderboard", description="Shows the guild vc time leaderboard for daily, weekly, or total periods.")
     @app_commands.describe(period="which leaderboard period (daily, weekly, or total).")
     @app_commands.choices(period=[
         Choice(name="Daily", value=0),

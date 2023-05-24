@@ -9,7 +9,7 @@ class AdminCog(commands.Cog):
         self.bot = bot
 
     ##---------- Admin Total Message LB Reset -----------##
-    @app_commands.command(name="reset total message leaderboard", description="[ADMIN] Reset total message leaderboard.")
+    @app_commands.command(name="reset_total_message_leaderboard", description="[ADMIN] Reset total message leaderboard.")
     async def reset_total_mlb(self, interaction: discord.Interaction) -> None:
         if (interaction.permissions.administrator):
             lib.sql.resettmlb(interaction.guild_id)
@@ -19,7 +19,7 @@ class AdminCog(commands.Cog):
         await interaction.response.send_message(content=None, embed=embed)
 
     ##---------- Admin Total Voice LB Reset -----------##
-    @app_commands.command(name="reset total vc leaderboard", description="[ADMIN] Reset total voice leaderboard.")
+    @app_commands.command(name="reset_total_vc_leaderboard", description="[ADMIN] Reset total voice leaderboard.")
     async def reset_total_vclb(self, interaction: discord.Interaction) -> None:
         if (interaction.permissions.administrator):
             lib.sql.resettvclb(interaction.guild.id)
@@ -29,7 +29,7 @@ class AdminCog(commands.Cog):
         await interaction.respone.send_message(content=None, embed=embed)
             
     ##---------- Admin Message Remove -----------##
-    @app_commands.command(name="remove messages", description="[ADMIN] Remove a certain amount of messages from a user.")
+    @app_commands.command(name="remove_messages", description="[ADMIN] Remove a certain amount of messages from a user.")
     @app_commands.describe(user="The user you want to remove messages from.", messages="The number of messages to remove.")
     async def removemessages(self, interaction: discord.Interaction, user: discord.Member, messages: int) -> None:
         if (interaction.permissions.administrator):
@@ -50,7 +50,7 @@ class AdminCog(commands.Cog):
         await interaction.response.send_message(content=None, embed=embed)
 
     ##---------- Set Invite Code -----------##
-    @app_commands.command(name="set invite code", description="[ADMIN] Set the invite code for your server to show up in guild leaderboards.")
+    @app_commands.command(name="invite_code", description="[ADMIN] Set the invite code for your server to show up in guild leaderboards.")
     @app_commands.describe(code="The invite code you want to set for your server.")
     async def invitecode(self, interactions: discord.Interaction, code: str) -> None:
         conn, c = lib.sql.glb_connect()
