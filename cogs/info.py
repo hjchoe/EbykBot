@@ -1,22 +1,27 @@
 import discord
-import lib.slash_util as slash_util
+from discord import app_commands
+from discord.app_commands import Choice
+from discord.ext import commands
 import lib.embed
 import lib.sql
 
-class sInfoCog(slash_util.ApplicationCog):
+class InfoCog(commands.Cog):
+    def __init__(self, bot: commands.Bot) -> None:
+        self.bot = bot
+
     ##---------- Userinfo -----------##
-    @slash_util.slash_command(description="Shows information about a user.")
-    @slash_util.describe(user="The user you want the info of.")
-    async def userinfo(self, ctx, user: discord.Member=None):
+    @app_commands.command(name="user info", description="Shows information about a user.")
+    @app_commands.describe(user="The user you want the info of (enter nothing for your vc time).")
+    async def userinfo(self, interaction: discord.Interaction, user: discord.Member=None) -> None:
         if user is None:
-            user = ctx.author
-        conn, c = lib.sql.connect(ctx.guild.id)
-        pos = sum(m.joined_at < user.joined_at for m in ctx.guild.members if m.joined_at is not None)
+            user = interaction.author
+        conn, c = lib.sql.connect(interaction.guild.id)
+        pos = sum(m.joined_at < user.joined_at for m in interaction.guild.members if m.joined_at is not None)
         posreal = pos + 1
 
-        msgcount, tmsgcount, dmsgcount = lib.sql.messagecount(user.id, ctx.guild.id)
-        userhours, usermins, tuserhours, tusermins = lib.sql.vcount(user.id, ctx.guild.id)
-        bal = lib.sql.balancegrab(user.id, ctx.guild.id)
+        msgcount, tmsgcount, dmsgcount = lib.sql.messagecount(user.id, interaction.guild.id)
+        userhours, usermins, tuserhours, tusermins = lib.sql.vcount(user.id, interaction.guild.id)
+        bal = lib.sql.balancegrab(user.id, interaction.guild.id)
 
         whois = discord.Embed(title='', description=f"""<@{user.id}>""", color=10181046)
         whois.set_author(name=user, icon_url=user.avatar.url)
@@ -35,12 +40,12 @@ class sInfoCog(slash_util.ApplicationCog):
             whois.add_field(name='Account Type', value=f"""bot""", inline=False)
 
         whois.add_field(name='Join Position', value=posreal)
-        await ctx.send(content=None, embed=whois)
+        await interaction.response.send_message(content=None, embed=whois)
 
     ##---------- serverinfo -----------##
-    @slash_util.slash_command(description="Shows information about current server.")
-    async def serverinfo(self, ctx):
-        guild = ctx.guild
+    @app_commands.command(name="server info", description="Shows information about current server.")
+    async def serverinfo(self, interaction: discord.Interaction) -> None:
+        guild = interaction.guild
 
         whois = discord.Embed(title='', description=guild.description, color=16632470)
         whois.set_author(name=guild.name, icon_url=guild.icon.url)
@@ -67,29 +72,29 @@ class sInfoCog(slash_util.ApplicationCog):
             features = "None"
         whois.add_field(name='Unlocked Features', value=features, inline=False)
 
-        await ctx.send(content=None, embed=whois)
+        await interaction.repsonse.send_message(content=None, embed=whois)
 
     ##---------- NITROBOOST -----------##
-    @slash_util.slash_command(description="Shows nitro boost information about current server.")
-    async def boosts(self, ctx):
+    @app_commands.command(name="boosts", description="Shows nitro boost information about current server.")
+    async def boosts(self, interaction: discord.Interaction) -> None:
         members = []
-        for member in ctx.author.guild.premium_subscribers:
+        for member in interaction.author.guild.premium_subscribers:
             members.append(f'<@{member.id}>')
             members = [str(members).replace('[','').replace(']','').replace("'",'').replace("'",'')]
         members = str(members).replace('[','').replace(']','').replace("'",'').replace("'",'')
         # nitro = discord.Embed(title='', description=f"""**Tier:** level {ctx.author.guild.premium_tier} \n**Boosts:** {ctx.author.guild.premium_subscription_count} \n**Boosters:** {members}""", color=16580705)
-        nitro = discord.Embed(title='', description=f"""**Tier:** level {ctx.author.guild.premium_tier} \n**Boosts:** {ctx.author.guild.premium_subscription_count}""", color=16580705)
+        nitro = discord.Embed(title='', description=f"""**Tier:** level {interaction.author.guild.premium_tier} \n**Boosts:** {interaction.author.guild.premium_subscription_count}""", color=16580705)
 
-        nitro.set_author(name=f"{ctx.guild.name}'s Nitro Boost Status", icon_url=ctx.guild.icon.url)
+        nitro.set_author(name=f"{interaction.guild.name}'s Nitro Boost Status", icon_url=interaction.guild.icon.url)
         nitro.set_thumbnail(url='https://cdn.discordapp.com/emojis/689542582987915438.gif?v=1')
-        await ctx.send(content=None, embed=nitro)
+        await interaction.response.send_message(content=None, embed=nitro)
 
     ##---------- GUILDS -----------##
-    @slash_util.slash_command(description="Shows how many guilds the bot is in.")
-    async def guilds(self, ctx):
+    @app_commands.command(description="Shows how many guilds the bot is in.")
+    async def guilds(self, interaction: discord.Interaction) -> None:
         guilds = len(self.bot.guilds)
         embed = lib.embed.systemEmbed(f"""Currently in **{guilds}** servers.""", self.bot)
-        await ctx.send(content=None, embed=embed)
+        await interaction.response.send_message(content=None, embed=embed)
 
-def setup(bot):
-    bot.add_cog(sInfoCog(bot))
+def setup(bot: commands.Bot):
+    bot.add_cog(InfoCog(bot))

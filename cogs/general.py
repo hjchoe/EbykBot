@@ -10,7 +10,7 @@ class GeneralCog(commands.Cog):
 
     ##---------- AVATAR -----------##
     @app_commands.command(name="avatar", description="Shows the avatar of the user.")
-    @app_commands.describe(user="The user you want the avatar/pfp of.")
+    @app_commands.describe(user="The user you want the avatar/pfp of (enter nothing for your avatar).")
     async def avatar(self, interaction: discord.Interaction, user: discord.Member=None) -> None: 
         try:
             userave = discord.Embed(title='', description=f"""<@{user.id}>'s pfp""", color=16580705)

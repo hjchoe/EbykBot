@@ -47,13 +47,6 @@ def checkwin(choice, result):
         win = False
     return win
 
-def checkside(side):
-    possible = ["heads", "tails", "h", "t"]
-    if side.lower() in possible:
-        return True
-    else:
-        return False
-
 def transaction(userid, guildid, win, betamt, bank):
     bank = int(bank)
     betamt = int(betamt)
