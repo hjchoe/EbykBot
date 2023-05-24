@@ -86,5 +86,19 @@ class GeneralCog(commands.Cog):
         embed = lib.embed.systemEmbed('**Invite:** https://discord.com/api/oauth2/authorize?client_id=800171925275017237&permissions=277025508416&scope=bot%20applications.commands\nadd + dm **ebyk#1660** for questions or suggestions', self.bot)
         await interaction.response.send_message(content=None, embed=embed)
 
+    @commands.Cog.listener()
+    async def on_guild_join(self, guild):
+        try:
+            conn, c = lib.sql.connect(guild.id)
+        except:
+            lib.sql.newdbfile(guild.id)
+            conn, c = lib.sql.connect(guild.id)
+        await self.updatestatus(self.bot)
+
+    @commands.Cog.listener()
+    async def on_guild_remove(self, guild):
+        lib.sql.deletedbfile(guild.id)
+        await self.updatestatus(self.bot)
+
 async def setup(bot: commands.Bot):
     await bot.add_cog(GeneralCog(bot))

@@ -17,6 +17,7 @@ def connect(guildid):
     c.execute('CREATE TABLE IF NOT EXISTS dmsgCount(userid VARCHAR(255), dmsgs INT)')
     c.execute('CREATE TABLE IF NOT EXISTS vcTime(userid VARCHAR(255), vc INT)')
     c.execute('CREATE TABLE IF NOT EXISTS "totalvcTime"("userid" VARCHAR(255), "tvc" INT)')
+    c.execute('CREATE TABLE IF NOT EXISTS dvcTime(userid VARCHAR(255), dvc INT)')
     c.execute('CREATE TABLE IF NOT EXISTS timeLog(userid VARCHAR(255), jTime DATETIME)')
     c.execute('CREATE TABLE IF NOT EXISTS bank(userid VARCHAR(255), money INT)')
     conn.commit()
@@ -31,6 +32,7 @@ def glb_connect():
     c.execute('CREATE TABLE IF NOT EXISTS dguildmsgcount(guildid VARCHAR(255), dmsgs INT)')
     c.execute('CREATE TABLE IF NOT EXISTS guildvctime(guildid VARCHAR(255), vc INT)')
     c.execute('CREATE TABLE IF NOT EXISTS tguildvctime(guildid VARCHAR(255), tvc INT)')
+    c.execute('CREATE TABLE IF NOT EXISTS dguildvctime(guildid VARCHAR(255), tvc INT)')
     c.execute('CREATE TABLE IF NOT EXISTS invitecode(guildid VARCHAR(255), code VARCHAR(255))')
     conn.commit()
     return conn, c
@@ -218,6 +220,40 @@ async def tvcleaderboard(bot, guildid):
         return the_vclist
     except:
         return None
+
+async def dvcleaderboard(bot, guildid):
+    conn, c = connect(guildid)
+    try:
+        c.execute('SELECT userid FROM dvcTime ORDER BY dvc DESC')
+        all_user = c.fetchall()
+        c.execute('SELECT dvc FROM dvcTime ORDER BY dvc DESC')
+        all_vc = c.fetchall()
+
+        if len(all_user) < 10:
+            listrange = len(all_user)
+        else:
+            listrange = 10
+
+        the_vclist = ''
+        for x in range(listrange):
+            user = sqlTOstr(all_user[x])
+            vc = sqlTOstr(all_vc[x])
+            vc = int(vc)
+            vchours = 0
+
+            while vc > 60:
+                vchours += 1
+                vc -= 60
+
+            try:
+                guildobject = bot.get_guild(guildid)
+                userobject = await guildobject.fetch_member(user)
+                the_vclist += f'{str(x + 1)}. {userobject.mention} - **{vchours} hours and {vc} minutes **\n'
+            except:
+                pass
+        return the_vclist
+    except:
+        return None
     
 def vcount(userid, guildid):
     conn, c = connect(guildid)
@@ -226,6 +262,8 @@ def vcount(userid, guildid):
         vcount = c.fetchone()
         c.execute("SELECT tvc from totalvcTime WHERE userid = ?", (userid,))
         tvcount = c.fetchone()
+        c.execute("SELECT dvc from dvcTime WHERE userid = ?", (userid,))
+        dvcount = c.fetchone()
 
         if vcount is None:
             vcount = 0
@@ -233,10 +271,15 @@ def vcount(userid, guildid):
         if tvcount is None:
             tvcount = 0
 
+        if dvcount is None:
+            dvcount = 0
+
         uvctime = int(sqlTOstr(vcount))
         tuvctime = int(sqlTOstr(tvcount))
+        duvctime = int(sqlTOstr(dvcount))
         userhours = 0
         tuserhours = 0
+        duserhours = 0
 
         while uvctime > 60:
             userhours += 1
@@ -245,8 +288,12 @@ def vcount(userid, guildid):
         while tuvctime > 60:
             tuserhours += 1
             tuvctime -= 60
+        
+        while duvctime > 60:
+            duserhours += 1
+            duvctime -= 60
 
-        return userhours, uvctime, tuserhours, tuvctime
+        return userhours, uvctime, tuserhours, tuvctime, duserhours, duvctime
     except:
         return None
 
@@ -430,6 +477,36 @@ async def glb_tvcleaderboard(bot):
         except:
             pass
     return the_vclist
+
+async def glb_dvcleaderboard(bot):
+    conn, c = glb_connect()
+    c.execute('SELECT guildid FROM dguildvctime ORDER BY dvc DESC')
+    all_guild = c.fetchall()
+    c.execute('SELECT dvc FROM dguildvctime ORDER BY dvc DESC')
+    all_vc = c.fetchall()
+
+    if len(all_guild) < 10:
+        listrange = len(all_guild)
+    else:
+        listrange = 10
+
+    the_vclist = ''
+    for x in range(listrange):
+        guild = sqlTOstr(all_guild[x])
+        vc = sqlTOstr(all_vc[x])
+        vc = int(vc)
+        vchours = 0
+
+        while vc > 60:
+            vchours += 1
+            vc -= 60
+
+        try:
+            guildobject = bot.get_guild(int(guild))
+            the_vclist += f'{str(x + 1)}. {guildobject.name} - **{vchours} hours and {vc} minutes **\n'
+        except:
+            pass
+    return the_vclist
     
 def glb_vcount(guildid):
     conn, c = glb_connect()
@@ -438,6 +515,8 @@ def glb_vcount(guildid):
         vcount = c.fetchone()
         c.execute("SELECT tvc from tguildvctime WHERE guildid = ?", (guildid,))
         tvcount = c.fetchone()
+        c.execute("SELECT dvc from dguildvctime WHERE guildid = ?", (guildid,))
+        dvcount = c.fetchone()
 
         if vcount is None:
             vcount = 0
@@ -445,10 +524,15 @@ def glb_vcount(guildid):
         if tvcount is None:
             tvcount = 0
 
+        if dvcount is None:
+            dvcount = 0
+
         uvctime = int(sqlTOstr(vcount))
         tuvctime = int(sqlTOstr(tvcount))
+        duvctime = int(sqlTOstr(dvcount))
         userhours = 0
         tuserhours = 0
+        duserhours = 0
 
         while uvctime > 60:
             userhours += 1
@@ -457,8 +541,12 @@ def glb_vcount(guildid):
         while tuvctime > 60:
             tuserhours += 1
             tuvctime -= 60
+        
+        while duvctime > 60:
+            duserhours += 1
+            duvctime -= 60
 
-        return userhours, uvctime, tuserhours, tuvctime
+        return userhours, uvctime, tuserhours, tuvctime, duserhours, duvctime
     except:
         return None
 
@@ -530,6 +618,7 @@ def resetdlb():
             c = conn.cursor()
             try:
                 c.execute('UPDATE dmsgCount SET dmsgs = 0 WHERE dmsgs < 999999')
+                c.execute('UPDATE dvcTime SET dvc = 0 WHERE dvc < 999999')
                 conn.commit()
                 print(f"Leaderboard Reset Succeeded for {filename}")
             except:
@@ -537,6 +626,7 @@ def resetdlb():
     gconn, gc = glb_connect()
     try:
         gc.execute('UPDATE dguildmsgcount SET dmsgs = 0 WHERE dmsgs < 999999')
+        gc.execute('UPDATE dguildvctime SET dvc = 0 WHERE dvc < 999999')
         gconn.commit()
         print(f"Leaderboard Reset Succeeded for guild leaderboards")
     except:
@@ -579,3 +669,10 @@ def cleanTimeLog():
 def newdbfile(guildid):
     filename = f"{dbdir}({guildid}) sql.db"
     open(filename)
+
+def deletedbfile(guildid):
+    filename = f"{dbdir}({guildid}) sql.db"
+    if os.path.isfile(filename):
+        os.remove(filename)
+    else:
+        print(f"Error: {filename} file not found")
