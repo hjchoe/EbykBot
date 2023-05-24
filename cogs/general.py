@@ -77,7 +77,7 @@ class GeneralCog(commands.Cog):
             helpe.add_field(name='/remove messages', value='remove total messages from a member, requires Admin Permission', inline=False)
             helpe.add_field(name='/invite code', value='set the invite code for your server, requires Admin Permission', inline=False)
 
-        helpe.set_footer(text="Join Support Server: https://discord.gg/prcN3AtNcZ")
+        helpe.set_footer(text="Join Support Server: https://discord.gg/prcN3AtNcZ\nPrivacy Policy: https://docs.google.com/document/d/1fEq_w4kAX7PdkFJk_7IhGA4_4MPH-hIE8mrVC1eLGCw/edit?usp=sharing")
         await interaction.response.send_message(content=None, embed=helpe)
 
     ##---------- INVITE -----------##

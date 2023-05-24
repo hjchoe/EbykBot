@@ -14,7 +14,7 @@ import time
 import datetime
 
 intents = discord.Intents.default()
-intents.messages = False
+intents.messages = True
 intents.members = False
 intents.presences = False
 
@@ -89,102 +89,101 @@ def read_token():
 @bot.event
 async def on_message(self, message) -> None:
     print("detected message")
-    #await self.bot.process_commands(message)
-    ctx = await self.bot.get_context(message)
-    if not ctx.valid:
-        if message.author.bot:
-            return
+    await self.bot.process_commands(message)
 
-        if self.bot.user.mentioned_in(message) and not message.mention_everyone:
-            embed = lib.embed.systemEmbed("**prefix:** /\nSend `/help` for my help menu!", self.bot)
-            await message.channel.send(content=None, embed=embed)
+    if message.author.bot:
+        return
 
-        if message.guild is None and message.author is not self.bot.user and '/help' not in message.content.lower():
-            await message.author.send("Hey I'm Ebyk Bot, run the command **/help** to check out what I offer!")
-            return
+    if self.bot.user.mentioned_in(message) and not message.mention_everyone:
+        embed = lib.embed.systemEmbed("**prefix:** /\nSend `/help` for my help menu!", self.bot)
+        await message.channel.send(content=None, embed=embed)
 
-        conn, c = lib.sql.connect(message.guild.id)
-        gconn, gc = lib.sql.glb_connect()
+    if message.guild is None and message.author is not self.bot.user:
+        await message.author.send("Hey I'm Ebyk Bot, run the command **/help** to check out what I offer!")
+        return
 
-        c.execute("SELECT msgs FROM msgCount WHERE userid = ?", (message.author.id,))
-        count = c.fetchone()
-        c.execute("SELECT tmsgs FROM totalmsgCount WHERE userid = ?", (message.author.id,))
-        tcount = c.fetchone()
-        c.execute("SELECT dmsgs FROM dmsgCount WHERE userid = ?", (message.author.id,))
-        dcount = c.fetchone()
+    conn, c = lib.sql.connect(message.guild.id)
+    gconn, gc = lib.sql.glb_connect()
 
-        gc.execute("SELECT msgs FROM guildmsgcount WHERE guildid = ?", (message.guild.id,))
-        gcount = gc.fetchone()
-        gc.execute("SELECT tmsgs FROM tguildmsgcount WHERE guildid = ?", (message.guild.id,))
-        gtcount = gc.fetchone()
-        gc.execute("SELECT dmsgs FROM dguildmsgcount WHERE guildid = ?", (message.guild.id,))
-        gdcount = gc.fetchone()
+    c.execute("SELECT msgs FROM msgCount WHERE userid = ?", (message.author.id,))
+    count = c.fetchone()
+    c.execute("SELECT tmsgs FROM totalmsgCount WHERE userid = ?", (message.author.id,))
+    tcount = c.fetchone()
+    c.execute("SELECT dmsgs FROM dmsgCount WHERE userid = ?", (message.author.id,))
+    dcount = c.fetchone()
 
-        if count is None:
-            c.execute('INSERT INTO msgCount (userid, msgs) VALUES (?,?)', (message.author.id, 1))
-            conn.commit()
-        else:
-            oldNum = count[0]
-            newNum = oldNum + 1
-            c.execute('UPDATE msgCount SET msgs = ? WHERE userid = ?', (newNum, message.author.id))
-            conn.commit()
+    gc.execute("SELECT msgs FROM guildmsgcount WHERE guildid = ?", (message.guild.id,))
+    gcount = gc.fetchone()
+    gc.execute("SELECT tmsgs FROM tguildmsgcount WHERE guildid = ?", (message.guild.id,))
+    gtcount = gc.fetchone()
+    gc.execute("SELECT dmsgs FROM dguildmsgcount WHERE guildid = ?", (message.guild.id,))
+    gdcount = gc.fetchone()
 
-        if tcount is None:
-            c.execute('INSERT INTO totalmsgCount (userid, tmsgs) VALUES (?,?)', (message.author.id, 1))
-            conn.commit()
-        else:
-            toldNum = tcount[0]
-            tnewNum = toldNum + 1
-            c.execute('UPDATE totalmsgCount SET tmsgs = ? WHERE userid = ?', (tnewNum, message.author.id))
-            conn.commit()
+    if count is None:
+        c.execute('INSERT INTO msgCount (userid, msgs) VALUES (?,?)', (message.author.id, 1))
+        conn.commit()
+    else:
+        oldNum = count[0]
+        newNum = oldNum + 1
+        c.execute('UPDATE msgCount SET msgs = ? WHERE userid = ?', (newNum, message.author.id))
+        conn.commit()
 
-        if dcount is None:
-            c.execute('INSERT INTO dmsgCount (userid, dmsgs) VALUES (?,?)', (message.author.id, 1))
-            conn.commit()
-        else:
-            doldNum = dcount[0]
-            dnewNum = doldNum + 1
-            c.execute('UPDATE dmsgCount SET dmsgs = ? WHERE userid = ?', (dnewNum, message.author.id))
-            conn.commit()
+    if tcount is None:
+        c.execute('INSERT INTO totalmsgCount (userid, tmsgs) VALUES (?,?)', (message.author.id, 1))
+        conn.commit()
+    else:
+        toldNum = tcount[0]
+        tnewNum = toldNum + 1
+        c.execute('UPDATE totalmsgCount SET tmsgs = ? WHERE userid = ?', (tnewNum, message.author.id))
+        conn.commit()
 
-        if gcount is None:
-            gc.execute('INSERT INTO guildmsgcount (guildid, msgs) VALUES (?,?)', (message.guild.id, 1))
-            gconn.commit()
-        else:
-            oldNum = count[0]
-            newNum = oldNum + 1
-            gc.execute('UPDATE guildmsgcount SET msgs = ? WHERE guildid = ?', (newNum, message.guild.id))
-            gconn.commit()
+    if dcount is None:
+        c.execute('INSERT INTO dmsgCount (userid, dmsgs) VALUES (?,?)', (message.author.id, 1))
+        conn.commit()
+    else:
+        doldNum = dcount[0]
+        dnewNum = doldNum + 1
+        c.execute('UPDATE dmsgCount SET dmsgs = ? WHERE userid = ?', (dnewNum, message.author.id))
+        conn.commit()
 
-        if gtcount is None:
-            gc.execute('INSERT INTO tguildmsgcount (guildid, tmsgs) VALUES (?,?)', (message.guild.id, 1))
-            gconn.commit()
-        else:
-            toldNum = tcount[0]
-            tnewNum = toldNum + 1
-            gc.execute('UPDATE tguildmsgcount SET tmsgs = ? WHERE guildid = ?', (tnewNum, message.guild.id))
-            gconn.commit()
+    if gcount is None:
+        gc.execute('INSERT INTO guildmsgcount (guildid, msgs) VALUES (?,?)', (message.guild.id, 1))
+        gconn.commit()
+    else:
+        oldNum = count[0]
+        newNum = oldNum + 1
+        gc.execute('UPDATE guildmsgcount SET msgs = ? WHERE guildid = ?', (newNum, message.guild.id))
+        gconn.commit()
 
-        if gdcount is None:
-            gc.execute('INSERT INTO dguildmsgcount (guildid, dmsgs) VALUES (?,?)', (message.guild.id, 1))
-            gconn.commit()
-        else:
-            doldNum = dcount[0]
-            dnewNum = doldNum + 1
-            gc.execute('UPDATE dguildmsgcount SET dmsgs = ? WHERE guildid = ?', (dnewNum, message.guild.id))
-            gconn.commit()
+    if gtcount is None:
+        gc.execute('INSERT INTO tguildmsgcount (guildid, tmsgs) VALUES (?,?)', (message.guild.id, 1))
+        gconn.commit()
+    else:
+        toldNum = tcount[0]
+        tnewNum = toldNum + 1
+        gc.execute('UPDATE tguildmsgcount SET tmsgs = ? WHERE guildid = ?', (tnewNum, message.guild.id))
+        gconn.commit()
 
-        c.execute("SELECT money FROM bank WHERE userid = ?", (message.author.id,))
-        kaching = c.fetchone()
+    if gdcount is None:
+        gc.execute('INSERT INTO dguildmsgcount (guildid, dmsgs) VALUES (?,?)', (message.guild.id, 1))
+        gconn.commit()
+    else:
+        doldNum = dcount[0]
+        dnewNum = doldNum + 1
+        gc.execute('UPDATE dguildmsgcount SET dmsgs = ? WHERE guildid = ?', (dnewNum, message.guild.id))
+        gconn.commit()
 
-        if kaching is None:
-            c.execute('INSERT INTO bank (userid, money) VALUES (?,?)', (message.author.id, 1))
-            conn.commit()
-        else:
-            oldNum = kaching[0]
-            newNum = oldNum + 1
-            c.execute('UPDATE bank SET money = ? WHERE userid = ?', (newNum, message.author.id))
-            conn.commit()
+    c.execute("SELECT money FROM bank WHERE userid = ?", (message.author.id,))
+    kaching = c.fetchone()
+
+    if kaching is None:
+        c.execute('INSERT INTO bank (userid, money) VALUES (?,?)', (message.author.id, 1))
+        conn.commit()
+    else:
+        oldNum = kaching[0]
+        newNum = oldNum + 1
+        c.execute('UPDATE bank SET money = ? WHERE userid = ?', (newNum, message.author.id))
+        conn.commit()
 
 @bot.event
 async def on_voice_state_update(self, member, before, after) -> None:
