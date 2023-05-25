@@ -90,7 +90,7 @@ def read_token():
 @bot.event
 async def on_message(message) -> None:
     print("detected message")
-"""    
+
     await self.bot.process_commands(message)
 
     if message.author.bot:
@@ -186,10 +186,9 @@ async def on_message(message) -> None:
         newNum = oldNum + 1
         c.execute('UPDATE bank SET money = ? WHERE userid = ?', (newNum, message.author.id))
         conn.commit()
-"""
 
 @bot.event
-async def on_voice_state_update(self, member, before, after) -> None:
+async def on_voice_state_update(member, before, after) -> None:
     if member.bot:
         return
 
