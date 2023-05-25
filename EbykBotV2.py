@@ -91,16 +91,16 @@ def read_token():
 async def on_message(message) -> None:
     print("detected message")
 
-    await self.bot.process_commands(message)
+    await bot.process_commands(message)
 
     if message.author.bot:
         return
 
-    if self.bot.user.mentioned_in(message) and not message.mention_everyone:
-        embed = lib.embed.systemEmbed("**prefix:** /\nSend `/help` for my help menu!", self.bot)
+    if bot.user.mentioned_in(message) and not message.mention_everyone:
+        embed = lib.embed.systemEmbed("**prefix:** /\nSend `/help` for my help menu!", bot)
         await message.channel.send(content=None, embed=embed)
 
-    if message.guild is None and message.author is not self.bot.user:
+    if message.guild is None and message.author is not bot.user:
         await message.author.send("Hey I'm Ebyk Bot, run the command **/help** to check out what I offer!")
         return
 
