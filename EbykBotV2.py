@@ -88,7 +88,7 @@ def read_token():
 ##-------------------------------------------------- EVENTS ---------------------------------------------------##
 
 @bot.event
-async def on_message(self, message) -> None:
+async def on_message(message) -> None:
     print("detected message")
 """    
     await self.bot.process_commands(message)
